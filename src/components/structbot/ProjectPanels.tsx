@@ -25,7 +25,7 @@ export function WorkstreamsPanel({ revision }: { revision: number }) {
   return (
     <Panel
       id="structbot-workstreams"
-      title="Quem está cuidando do quê"
+      title="Frentes registradas pelo mantenedor"
       caption="04 / frentes de trabalho"
       aside={<GitBranch size={19} />}
     >

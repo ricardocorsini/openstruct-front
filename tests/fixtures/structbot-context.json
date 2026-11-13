@@ -1,0 +1,185 @@
+{
+  "conversation": {
+    "item_key": "example/project#1",
+    "repository": "example/project",
+    "number": 1,
+    "title": "Melhorar exportação",
+    "url": "https://github.com/example/project/issues/1",
+    "kind": "issue",
+    "item_state": "open",
+    "assignees": [],
+    "analysis_state": "ready",
+    "collection": {
+      "status": "complete",
+      "message_count": 4,
+      "collected_at": "2026-11-13T21:00:00Z"
+    },
+    "analysis": {
+      "id": "fixture-analysis",
+      "content": {
+        "item_key": "example/project#1",
+        "summary": "Ana implementa a exportação, com ajuste combinado. Carlos ofereceu testes.",
+        "state": "in_progress",
+        "certainty": "declared",
+        "participants": [
+          {
+            "login": "ana",
+            "role": "implementation",
+            "scope": "Exportação e ajuste da abertura",
+            "state": "in_progress",
+            "certainty": "declared",
+            "evidence": [
+              {
+                "message_id": "issue_comment:1",
+                "quote": "Vou implementar a exportação"
+              }
+            ]
+          },
+          {
+            "login": "bruno",
+            "role": "review",
+            "scope": "Discussão da abertura",
+            "state": "changes_requested",
+            "certainty": "inferred",
+            "evidence": [
+              {
+                "message_id": "issue_comment:2",
+                "quote": "Precisamos corrigir o comportamento"
+              }
+            ]
+          },
+          {
+            "login": "carlos",
+            "role": "tests",
+            "scope": "Testes no Linux",
+            "state": "offered",
+            "certainty": "declared",
+            "evidence": [
+              {
+                "message_id": "issue_comment:4",
+                "quote": "Posso ajudar com os testes no Linux"
+              }
+            ]
+          }
+        ],
+        "discussions": [
+          {
+            "topic": "Abertura",
+            "summary": "Ajuste combinado antes da PR",
+            "state": "decided",
+            "evidence": [
+              {
+                "message_id": "issue_comment:3",
+                "quote": "Concordo, vou ajustar antes de enviar a PR."
+              }
+            ]
+          }
+        ],
+        "corrections": [
+          {
+            "description": "Revisar a abertura",
+            "state": "acknowledged",
+            "evidence": [
+              {
+                "message_id": "issue_comment:3",
+                "quote": "Concordo, vou ajustar antes de enviar a PR."
+              }
+            ]
+          }
+        ],
+        "open_questions": [],
+        "evidence": [
+          {
+            "message_id": "issue_comment:1",
+            "quote": "Vou implementar a exportação"
+          }
+        ],
+        "limitations": [
+          "Declarações públicas; execução não verificada."
+        ]
+      },
+      "sources": {
+        "issue_comment:1": {
+          "id": "issue_comment:1",
+          "url": "https://github.com/example/project/issues/1#issuecomment-1",
+          "author": "ana",
+          "kind": "issue_comment",
+          "created_at": "2026-11-13T12:01:00Z"
+        },
+        "issue_comment:2": {
+          "id": "issue_comment:2",
+          "url": "https://github.com/example/project/issues/1#issuecomment-2",
+          "author": "bruno",
+          "kind": "issue_comment",
+          "created_at": "2026-11-13T12:02:00Z"
+        },
+        "issue_comment:3": {
+          "id": "issue_comment:3",
+          "url": "https://github.com/example/project/issues/1#issuecomment-3",
+          "author": "ana",
+          "kind": "issue_comment",
+          "created_at": "2026-11-13T12:03:00Z"
+        },
+        "issue_comment:4": {
+          "id": "issue_comment:4",
+          "url": "https://github.com/example/project/issues/1#issuecomment-4",
+          "author": "carlos",
+          "kind": "issue_comment",
+          "created_at": "2026-11-13T12:04:00Z"
+        }
+      },
+      "origin": "openai",
+      "model": "test-model",
+      "created_at": "2026-11-13T21:02:00Z",
+      "stale": false,
+      "reason": null,
+      "author": null
+    }
+  },
+  "report": {
+    "id": "fixture-edition",
+    "provider": "openai",
+    "model": "test-model",
+    "stale": false,
+    "source_versions_changed": false,
+    "sources_stale": false,
+    "created_at": "2026-11-13T21:05:00Z",
+    "published_at": "2026-11-13T21:05:00Z",
+    "content": {
+      "title": "Boletim de demonstração",
+      "summary": "Cenário de demonstração: Ana conduz a implementação e combinou um ajuste após a discussão.",
+      "community_bulletin": "Cenário de demonstração: Ana conduz a implementação e combinou um ajuste após a discussão.",
+      "advances": [],
+      "blockers": [],
+      "next_actions": [],
+      "limitations": [
+        "Dados fictícios de teste."
+      ],
+      "news": {
+        "headline": "Uma contribuição avança com revisão e ajuda da comunidade",
+        "lead": "Cenário de demonstração: Ana conduz a implementação e combinou um ajuste após a discussão.",
+        "stories": [
+          {
+            "headline": "Ajuste na abertura foi combinado antes da PR",
+            "body": "No cenário de teste, Ana assumiu a implementação. Bruno levantou um ponto de revisão e Carlos ofereceu ajuda com os testes no Linux.",
+            "category": "discussion",
+            "item_keys": [
+              "example/project#1"
+            ],
+            "conversation_keys": [
+              "example/project#1"
+            ],
+            "evidence_ids": [],
+            "release_urls": [],
+            "contributors": [
+              "ana",
+              "bruno",
+              "carlos"
+            ]
+          }
+        ],
+        "call_to_action": "Confira a conversa antes de começar uma contribuição."
+      }
+    }
+  }
+}

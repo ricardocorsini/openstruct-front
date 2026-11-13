@@ -44,3 +44,13 @@ npm run audit:content
 ```
 
 Os testes do StructBot cobrem contratos, falhas HTTP/JSON, boletim ausente, parâmetros, URLs, contagens, deduplicação, cursor SSE, fallback paginado e encerramento das conexões. A auditoria também renderiza a nova rota no estado inicial e verifica seus links locais.
+
+## Conversas contextuais e jornal
+
+O topo do painel agora destaca “Últimas notícias do OpenStruct”, com manchete, abertura, notícias por tema, créditos e referências da edição publicada. `content.news` é opcional no cliente para preservar os boletins v1; nesses casos a abertura utiliza o boletim público existente.
+
+A seção “Conversas e responsáveis” consulta `/public/conversations` com filtros de projeto/estado e paginação. Mostra papéis por escopo, ofertas de ajuda, responsabilidade declarada/inferida/incerta, discussões, decisões, correções e citações originais. Atribuições oficiais do GitHub aparecem separadamente. Fontes alteradas ou incompletas e análises pendentes/desabilitadas têm estados explícitos. Nenhuma interação dispara IA ou altera GitHub.
+
+Publique o backend com a migração `0002` antes de integrar esta versão do frontend. O roteiro está no repositório `struct-bot`, em `docs/CONVERSAS-E-JORNAL.md`. O painel continua lendo edições antigas durante a atualização; a seção de conversas ficará indisponível enquanto o servidor ainda não oferecer a nova rota.
+
+Os fixtures em `tests/fixtures/structbot-context.json` usam nomes e conversas fictícios. Os testes de renderização conferem papéis, incerteza, fontes, HTML remoto escapado e compatibilidade entre edições v1/v2.

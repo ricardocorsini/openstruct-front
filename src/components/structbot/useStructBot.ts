@@ -9,6 +9,7 @@ export function usePublicResource<T>(
   path: string,
   check: (v: unknown) => v is T,
   revision: number,
+  enabled = true,
 ): Resource<T> {
   const [result, setResult] = useState<Resource<T> & { path: string }>({
     path,
@@ -20,6 +21,7 @@ export function usePublicResource<T>(
   const validator = useRef(check);
   validator.current = check;
   useEffect(() => {
+    if (!enabled) return;
     let active = true;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15_000);
@@ -48,7 +50,7 @@ export function usePublicResource<T>(
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [path, revision]);
+  }, [path, revision, enabled]);
   return result.path === path ? result : { data: null, loading: true, error: null };
 }
 export function useDashboard() {

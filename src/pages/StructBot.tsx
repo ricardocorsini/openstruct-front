@@ -11,7 +11,7 @@ import {
   Activity,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { countOf, eventLabels, isOverview, isStatus } from '../lib/structbot';
+import { countOf, eventLabels, isOverview, isStatus, isReport } from '../lib/structbot';
 import { useDashboard, usePublicResource } from '../components/structbot/useStructBot';
 import { DateLabel, Empty, Panel, ResourceNotice, SourceLink } from '../components/structbot/Panel';
 import { ReportPanel } from '../components/structbot/ReportPanel';
@@ -23,11 +23,14 @@ import {
   SourcesPanel,
   WorkstreamsPanel,
 } from '../components/structbot/ProjectPanels';
+import { ConversationsPanel } from '../components/structbot/ConversationsPanel';
+import { NewsPanel } from '../components/structbot/NewsPanel';
 import '../structbot.css';
 
 export function StructBot() {
   const dashboard = useDashboard();
   const overview = usePublicResource('/overview', isOverview, dashboard.revision);
+  const latestReport = usePublicResource('/reports/latest', isReport, dashboard.revision);
   const status = usePublicResource('/status', isStatus, dashboard.revision);
   const repositories = status.data?.repositories ?? overview.data?.repositories ?? [];
   const warnings = repositories.filter((r) => r.stale || r.sync_status !== 'ready' || !r.synced_at);
@@ -100,6 +103,7 @@ export function StructBot() {
             </Link>
           </div>
         </div>
+        <NewsPanel report={latestReport} />
         <div className="sb-status-line" role="status">
           <span>
             <span className={`sb-dot ${dashboard.connection !== 'live' ? 'sb-dot-warning' : ''}`} />
@@ -151,6 +155,8 @@ export function StructBot() {
           ))}
         </div>
         <nav className="sb-jump-links" aria-label="Seções do StructBot">
+          <a href="#structbot-news">Últimas notícias</a>
+          <a href="#structbot-conversations">Conversas</a>
           <a href="#structbot-report">Boletim</a>
           <a href="#structbot-inventory">Issues & PRs</a>
           <a href="#structbot-workstreams">Frentes</a>
@@ -158,7 +164,7 @@ export function StructBot() {
           <a href="#structbot-sources">Fontes</a>
         </nav>
         <div className="sb-command-grid">
-          <ReportPanel revision={dashboard.revision} />
+          <ReportPanel revision={dashboard.revision} latest={latestReport} />
           <div className="sb-feed-column">
             <Panel
               id="structbot-feed"
@@ -207,6 +213,7 @@ export function StructBot() {
             </div>
           </div>
         </div>
+        <ConversationsPanel revision={dashboard.revision} repositories={repositories} />
         <InventoryPanel revision={dashboard.revision} repositories={repositories} />
         <div className="sb-secondary-grid">
           <WorkstreamsPanel revision={dashboard.revision} />

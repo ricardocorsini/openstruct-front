@@ -1,3 +1,5 @@
+import { isNewspaper } from './structbot-context.ts';
+import type { Newspaper } from './structbot-context.ts';
 /** Public-only StructBot contract. No credentials or administrative routes belong here. */
 export const STRUCTBOT_ORIGIN = 'https://api.openstruct.com.br';
 export const STRUCTBOT_PUBLIC_PATH = '/structbot-api';
@@ -64,6 +66,7 @@ export type Report = {
     blockers: Finding[];
     next_actions: Finding[];
     limitations: string[];
+    news?: Newspaper;
   };
 };
 export type BotEvent = {
@@ -154,6 +157,7 @@ export const isReport = (v: unknown): v is Report =>
   object(v.content) &&
   textFields(v.content, 'title', 'summary', 'community_bulletin') &&
   strings(v.content.limitations) &&
+  (v.content.news === undefined || isNewspaper(v.content.news)) &&
   ['advances', 'blockers', 'next_actions'].every((k) =>
     arrayOf(v.content && (v.content as ObjectValue)[k], isFinding),
   );
@@ -305,6 +309,9 @@ export const stateLabels: Record<string, string> = {
   obsolete: 'Obsoleta',
 };
 export const eventLabels: Record<string, string> = {
+  'conversation.interpreted': 'conversa / interpretada',
+  'conversation.corrected': 'conversa / corrigida',
+  'issue.assigned': 'issue / atribuída',
   'issue.created': 'issue / registrada',
   'issue.updated': 'issue / atualizada',
   'issue.closed': 'issue / encerrada',
