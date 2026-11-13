@@ -29,6 +29,9 @@ const Consolo = React.lazy(() =>
 const Development = React.lazy(() =>
   import('./pages/Development').then((module) => ({ default: module.Development })),
 );
+const StructBot = React.lazy(() =>
+  import('./pages/StructBot').then((module) => ({ default: module.StructBot })),
+);
 const GeoSPT = React.lazy(() =>
   import('./pages/GeoSPT').then((module) => ({ default: module.GeoSPT })),
 );
@@ -117,6 +120,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                   </React.Suspense>
                 }
               />
+              <Route path="structbot" element={<StructBot />} />
               <Route path={site.developmentPath} element={<Development />} />
               <Route
                 path="development/contribuir-com-ia"

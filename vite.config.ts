@@ -110,5 +110,14 @@ export default defineConfig(({ command }) => ({
       },
     },
   ],
-  server: { allowedHosts: ['terminal.local'] },
+  server: {
+    allowedHosts: ['terminal.local'],
+    proxy: {
+      '/structbot-api': {
+        target: 'https://api.openstruct.com.br',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/structbot-api/, '/api/v1/public'),
+      },
+    },
+  },
 }));

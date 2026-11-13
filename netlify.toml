@@ -12,6 +12,12 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
 
 [[redirects]]
+  from = "/structbot-api/*"
+  to = "https://api.openstruct.com.br/api/v1/public/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

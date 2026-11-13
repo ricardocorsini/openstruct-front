@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { ArrowUpRight, GitFork, Menu, Moon, Sun, X, ArrowRight, Download } from 'lucide-react';
+import { ArrowUpRight, GitFork, Menu, Moon, Sun, X, ArrowRight, Download, Bot } from 'lucide-react';
 import { Brand, Mark } from './Brand';
 import { useExperience } from './Experience';
 import { site } from '../lib/config';
@@ -58,9 +58,11 @@ export function Layout() {
                     ? 'Contribuir com IA'
                     : location.pathname === '/releases'
                       ? 'Releases'
-                      : location.pathname === site.developmentPath
-                        ? 'Central de desenvolvimento'
-                        : 'Página não encontrada'));
+                      : location.pathname === '/structbot'
+                        ? 'StructBot'
+                        : location.pathname === site.developmentPath
+                          ? 'Central de desenvolvimento'
+                          : 'Página não encontrada'));
     document.title = `${page} — OpenStruct`;
   }, [location.pathname]);
   function changeTheme() {
@@ -105,6 +107,9 @@ export function Layout() {
             </NavLink>
             <NavLink to={site.developmentPath} onClick={close}>
               Desenvolvimento
+            </NavLink>
+            <NavLink to="/structbot" className="nav-structbot" onClick={close}>
+              <Bot size={16} aria-hidden="true" /> StructBot
             </NavLink>
             <Link to="/launcher" className="button button-primary mobile-launch" onClick={close}>
               Baixar Launcher <Download size={15} />
@@ -178,6 +183,7 @@ export function Layout() {
               <span className="footer-heading">EXPLORE</span>
               <Link to="/docs">Documentação</Link>
               <Link to={site.developmentPath}>Central de desenvolvimento</Link>
+              <Link to="/structbot">StructBot · painel de atividade</Link>
               <Link to="/releases">Releases e notas de versão</Link>
               <Link to="/docs#principios">Princípios</Link>
               <a href="/assets/openstruct-mark.svg" download>

@@ -29,6 +29,14 @@ test('global security headers coexist with CSP and are identical on Vercel and N
   );
   assert.deepEqual(netlifyHeaders, headers);
   assert.equal(vercel.git.deploymentEnabled['github-data'], false);
-  assert.deepEqual(vercel.rewrites, [{ source: '/(.*)', destination: '/index.html' }]);
+  assert.deepEqual(vercel.rewrites, [
+    {
+      source: '/structbot-api/:path*',
+      destination: 'https://api.openstruct.com.br/api/v1/public/:path*',
+    },
+    { source: '/(.*)', destination: '/index.html' },
+  ]);
+  assert.ok(netlify.indexOf('from = "/structbot-api/*"') < netlify.indexOf('from = "/*"'));
+  assert.match(netlify, /to = "https:\/\/api\.openstruct\.com\.br\/api\/v1\/public\/:splat"/);
   assert.match(netlify, /\[\[redirects\]\]\s+from = "\/\*"\s+to = "\/index\.html"\s+status = 200/);
 });

@@ -37,6 +37,10 @@
   ],
   "rewrites": [
     {
+      "source": "/structbot-api/:path*",
+      "destination": "https://api.openstruct.com.br/api/v1/public/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

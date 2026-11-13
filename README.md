@@ -386,3 +386,7 @@ Execute `npm run audit:content` para rotas, âncoras, artigos e mídia local. A 
 essa checagem e guarda o relatório. `npm run audit:external` acrescenta sondagens externas
 e alertas de versão; também roda diariamente em uma Action separada, sem bloquear o deploy
 por quota/timeout e sem abrir issues. Veja [cobertura, relatórios e manutenção](docs/AUDITORIA-CONTEUDO.md).
+
+### Painel StructBot
+
+A rota `/structbot` reúne boletins, atividade, issues, PRs e frentes de trabalho da API pública. A integração já está configurada para Vercel, Netlify e desenvolvimento local, sem tokens no frontend. Consulte [o contrato de integração e operação do painel](docs/STRUCTBOT.md).
