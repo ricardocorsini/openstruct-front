@@ -31,8 +31,8 @@ export function NewsPanel({ report }: { report: Resource<Report> }) {
       <ResourceNotice resource={report} />
       {!data && !report.loading && !report.error && (
         <Empty>
-          O jornal aparecerá aqui quando o primeiro boletim for publicado. Confira o inventário e as
-          conversas abaixo.
+          O jornal aparecerá aqui quando o primeiro boletim for publicado. Confira a central de
+          tarefas abaixo.
         </Empty>
       )}
       {data && (
@@ -52,47 +52,51 @@ export function NewsPanel({ report }: { report: Resource<Report> }) {
             </p>
           )}
           {news && news.stories.length > 0 && (
-            <div className="sb-news-stories">
-              {news.stories.map((story, index) => (
-                <article key={`${index}-${story.headline}`}>
-                  <span className="sb-panel-caption">
-                    {categoryLabels[story.category] || 'No ecossistema'}
-                  </span>
-                  <h4>{story.headline}</h4>
-                  <p>{story.body}</p>
-                  {story.contributors.length > 0 && (
-                    <div className="sb-news-contributors">
-                      {story.contributors.map((login) => (
-                        <SourceLink
-                          key={login}
-                          href={`https://github.com/${encodeURIComponent(login)}`}
-                        >
-                          @{login}
-                        </SourceLink>
-                      ))}
-                    </div>
-                  )}
-                  <References
-                    keys={[...new Set([...story.item_keys, ...story.conversation_keys])]}
-                  />
-                  {story.release_urls.map((url) => (
-                    <SourceLink key={url} href={url} className="sb-footnote">
-                      Consultar release
-                    </SourceLink>
-                  ))}
-                  {story.evidence_ids.length > 0 && (
-                    <p className="sb-footnote">Evidências: {story.evidence_ids.join(', ')}</p>
-                  )}
-                </article>
-              ))}
-            </div>
+            <details className="sb-news-expand">
+              <summary>Ver edição completa · {news.stories.length} notícias</summary>
+              <div className="sb-news-stories">
+                {news.stories.map((story, index) => (
+                  <article key={`${index}-${story.headline}`}>
+                    <span className="sb-panel-caption">
+                      {categoryLabels[story.category] || 'No ecossistema'}
+                    </span>
+                    <h4>{story.headline}</h4>
+                    <p>{story.body}</p>
+                    {story.contributors.length > 0 && (
+                      <div className="sb-news-contributors">
+                        {story.contributors.map((login) => (
+                          <SourceLink
+                            key={login}
+                            href={`https://github.com/${encodeURIComponent(login)}`}
+                          >
+                            @{login}
+                          </SourceLink>
+                        ))}
+                      </div>
+                    )}
+                    <References
+                      keys={[...new Set([...story.item_keys, ...story.conversation_keys])]}
+                    />
+                    {story.release_urls.map((url) => (
+                      <SourceLink key={url} href={url} className="sb-footnote">
+                        Consultar release
+                      </SourceLink>
+                    ))}
+                    {story.evidence_ids.length > 0 && (
+                      <p className="sb-footnote">Evidências: {story.evidence_ids.join(', ')}</p>
+                    )}
+                  </article>
+                ))}
+              </div>
+            </details>
           )}
           <div className="sb-news-closing">
             <p>
-              {news?.call_to_action || 'Leia as conversas e combine sua contribuição na issue.'}
+              {news?.call_to_action ||
+                'Escolha uma tarefa disponível e assuma sua contribuição pelo painel.'}
             </p>
-            <a href="#structbot-conversations">
-              Acompanhar as conversas <ArrowUpRight size={15} />
+            <a href="#structbot-tasks">
+              Encontrar uma tarefa <ArrowUpRight size={15} />
             </a>
           </div>
         </div>

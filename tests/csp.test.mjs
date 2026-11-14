@@ -34,7 +34,11 @@ test('HTTP CSP covers routes and static files without allowing inline scripts, e
   ])
     assert.deepEqual(directives.get(name), ["'self'"], name);
   assert.deepEqual(directives.get('object-src'), ["'none'"]);
-  assert.deepEqual(directives.get('connect-src'), ["'self'", 'https://raw.githubusercontent.com']);
+  assert.deepEqual(directives.get('connect-src'), [
+    "'self'",
+    'https://raw.githubusercontent.com',
+    'https://api.openstruct.com.br',
+  ]);
   assert.deepEqual(directives.get('img-src'), [
     "'self'",
     'data:',

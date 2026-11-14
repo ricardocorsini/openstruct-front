@@ -1,6 +1,6 @@
 import { isNewspaper } from './structbot-context.ts';
 import type { Newspaper } from './structbot-context.ts';
-/** Public-only StructBot contract. No credentials or administrative routes belong here. */
+/** Public read contract. Contributor sessions and mutations are isolated in structbot-tasks.ts. */
 export const STRUCTBOT_ORIGIN = 'https://api.openstruct.com.br';
 export const STRUCTBOT_PUBLIC_PATH = '/structbot-api';
 export const REFRESH_MS = 60_000;
@@ -309,6 +309,17 @@ export const stateLabels: Record<string, string> = {
   obsolete: 'Obsoleta',
 };
 export const eventLabels: Record<string, string> = {
+  'task.claim': 'tarefa / assumida',
+  'task.release': 'tarefa / liberada',
+  'task.submit': 'tarefa / entregue para revisão',
+  'task.block': 'tarefa / bloqueada',
+  'task.resume': 'tarefa / retomada',
+  'task.request_changes': 'tarefa / ajustes solicitados',
+  'task.complete': 'tarefa / concluída',
+  'task.reopen': 'tarefa / reaberta',
+  'task.reassign': 'tarefa / reatribuída',
+  'task.priority': 'tarefa / prioridade definida',
+  'task.github_sync': 'tarefa / atualizada pelo GitHub',
   'conversation.interpreted': 'conversa / interpretada',
   'conversation.corrected': 'conversa / corrigida',
   'issue.assigned': 'issue / atribuída',
