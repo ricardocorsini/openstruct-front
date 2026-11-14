@@ -54,3 +54,25 @@ A seção “Conversas e responsáveis” consulta `/public/conversations` com f
 Publique o backend com a migração `0002` antes de integrar esta versão do frontend. O roteiro está no repositório `struct-bot`, em `docs/CONVERSAS-E-JORNAL.md`. O painel continua lendo edições antigas durante a atualização; a seção de conversas ficará indisponível enquanto o servidor ainda não oferecer a nova rota.
 
 Os fixtures em `tests/fixtures/structbot-context.json` usam nomes e conversas fictícios. Os testes de renderização conferem papéis, incerteza, fontes, HTML remoto escapado e compatibilidade entre edições v1/v2.
+
+## Central de tarefas e login
+
+A tabela principal agora é `/api/v1/public/tasks`: todos os sistemas, issues e PRs e todos os estados, sem filtro inicial. Ela tem filtros por sistema/tipo/status/usuário, busca por título/número e atalhos para disponíveis, revisões, bloqueadas, sem responsável e minhas tarefas. Ativos vêm primeiro por prioridade e encerrados ficam ao final. Prioridade ausente/antiga aparece como “A avaliar”. O mantenedor pode registrar correção com justificativa.
+
+O jornal fica no início, com expansão para a edição completa; tabela vem antes do boletim e terminal. Detalhes da tarefa reúnem síntese, referências a outros itens, entrega registrada e histórico público paginado. Assumir é uma ação imediata; bloqueios, entregas e ações do mantenedor usam formulário com nota pública. PRs são reservados para revisão e mostram seu autor separado.
+
+### Dependência de backend e configuração
+
+Publique a versão do backend com migração **0003** antes deste frontend. Consulte `docs/CENTRAL-DE-TAREFAS.md` no repositório `ricardocorsini/struct-bot` para cadastro do OAuth App, configuração do callback, Client ID/Secret, IDs de mantenedores, webhook e atualização do Docker Compose.
+
+**Não há segredo novo no frontend.** Leituras públicas usam o proxy já existente `/structbot-api`. Login abre `https://api.openstruct.com.br/api/v1/auth/github/start`. Sessão e POSTs de contribuidor vão diretamente para a origem fixa `https://api.openstruct.com.br` com cookies e CSRF. Por isso CSP `connect-src` acrescenta somente essa origem em Vercel/Netlify; o proxy público não passa a encaminhar administração ou autenticação.
+
+Configure no backend `TASK_FRONTEND_URL` para a URL canônica pública (`https://openstruct.com.br/structbot` ou `https://www.openstruct.com.br/structbot`). Ambas as origens precisam permanecer permitidas em CORS. Cookies Secure, HttpOnly, host-only e SameSite=Lax pertencem ao subdomínio da API; site e API usam HTTPS e o mesmo domínio registrável. O ID/Secret do OAuth App e o PAT de coleta são credenciais diferentes e ficam apenas no servidor.
+
+Sem login configurado, a tabela é pública e informa que reservas aguardam ativação. Com login, o backend valida propriedade, permissões, versão e concorrência de toda ação. Uma falha de rede não é repetida automaticamente: a tabela é consultada novamente antes de nova tentativa. Um usuário comum não pode concluir/aprovar a própria entrega; enviar a entrega move para revisão.
+
+A tabela consulta o banco a cada visita, em revalidações de um minuto e ao receber eventos. O autor da ação atualiza a tabela após a confirmação; outros navegadores recebem eventos do backend e revalidam com agrupamento de um segundo. Queda do stream mantém fallback de consulta de eventos. Isso não envia requisições OpenAI pelo navegador.
+
+### Validação
+
+Testes cobrem contrato, disponibilidade por identidade/papel, origem fixa, cookies/CSRF, envio de versão, rejeição de respostas inválidas, conflito 409 e ausência de repetição automática. A interface é conferida com dados fictícios locais; a ativação real do OAuth depende do cadastro e configuração no servidor.

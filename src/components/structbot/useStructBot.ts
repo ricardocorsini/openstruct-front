@@ -91,7 +91,7 @@ export function useDashboard() {
         refreshTimer = setTimeout(() => {
           refreshTimer = undefined;
           refresh();
-        }, 10_000);
+        }, 1_000);
       },
     });
     return () => {
