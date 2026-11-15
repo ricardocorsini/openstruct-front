@@ -11,7 +11,14 @@ import {
   Activity,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { countOf, eventLabels, isOverview, isStatus, isReport } from '../lib/structbot';
+import {
+  countOf,
+  eventLabels,
+  isOverview,
+  isStatus,
+  isReport,
+  JOURNAL_REQUEST_OPTIONS,
+} from '../lib/structbot';
 import { useDashboard, usePublicResource } from '../components/structbot/useStructBot';
 import { DateLabel, Empty, Panel, ResourceNotice, SourceLink } from '../components/structbot/Panel';
 import { ReportPanel } from '../components/structbot/ReportPanel';
@@ -29,7 +36,13 @@ import '../structbot.css';
 export function StructBot() {
   const dashboard = useDashboard();
   const overview = usePublicResource('/overview', isOverview, dashboard.revision);
-  const latestReport = usePublicResource('/reports/latest', isReport, dashboard.revision);
+  const latestReport = usePublicResource(
+    '/reports/latest?include_sources=false',
+    isReport,
+    dashboard.reportRevision,
+    true,
+    JOURNAL_REQUEST_OPTIONS,
+  );
   const status = usePublicResource('/status', isStatus, dashboard.revision);
   const repositories = status.data?.repositories ?? overview.data?.repositories ?? [];
   const warnings = repositories.filter((r) => r.stale || r.sync_status !== 'ready' || !r.synced_at);
@@ -165,10 +178,10 @@ export function StructBot() {
         <TasksPanel
           revision={dashboard.revision}
           repositories={repositories}
-          refresh={dashboard.refresh}
+          refresh={dashboard.refreshData}
         />
         <div className="sb-command-grid">
-          <ReportPanel revision={dashboard.revision} latest={latestReport} />
+          <ReportPanel revision={dashboard.reportRevision} latest={latestReport} />
           <div className="sb-feed-column">
             <Panel
               id="structbot-feed"

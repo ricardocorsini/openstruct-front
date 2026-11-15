@@ -76,3 +76,13 @@ A tabela consulta o banco a cada visita, em revalidações de um minuto e ao rec
 ### Validação
 
 Testes cobrem contrato, disponibilidade por identidade/papel, origem fixa, cookies/CSRF, envio de versão, rejeição de respostas inválidas, conflito 409 e ausência de repetição automática. A interface é conferida com dados fictícios locais; a ativação real do OAuth depende do cadastro e configuração no servidor.
+
+## Carregamento do jornal
+
+O jornal e o histórico usam uma revisão independente do feed das tarefas: eventos SSE não cancelam/reiniciam suas consultas. A entrada na página, retorno à aba, atualização manual e intervalo visível de um minuto continuam revalidando as edições. O conteúdo é servido do banco, sem chamada OpenAI por leitura.
+
+O seletor consulta `/reports?limit=10&metadata_only=true`, com apenas os metadados necessários. A edição atual e os detalhes usam `include_sources=false`, sem transferir o inventário de versões completo. Os contratos aceitam campos adicionais, de modo que o frontend continua lendo a resposta completa de um backend anterior durante a atualização.
+
+Consultas do jornal têm prazo de 30 segundos. Após uma primeira carga válida, falhas transitórias de rede, timeout, HTTP 429 ou 5xx preservam somente a resposta da mesma rota em memória e exibem o aviso de que a revalidação falhou. Isso não é persistido em localStorage. HTTP 401/403/404, mudança da rota ou resposta inválida não conservam uma edição anterior; a retirada de uma publicação continua removendo seu conteúdo da tela. O timeout de outras seções permanece em 15 segundos.
+
+Correção complementar no backend evita consultas por item ao carregar reservas e compartilha verificações de fontes entre as edições da mesma resposta. Publique o backend atualizado para obter o ganho completo; não requer nova migração nem alterações no `.env`.

@@ -69,6 +69,8 @@ export type Report = {
     news?: Newspaper;
   };
 };
+export type ReportSummary = Pick<Report, 'id' | 'provider' | 'created_at' | 'published_at'>;
+export const JOURNAL_REQUEST_OPTIONS = { retainOnTransientFailure: true, timeoutMs: 30_000 };
 export type BotEvent = {
   id: number;
   repository: string;
@@ -161,6 +163,8 @@ export const isReport = (v: unknown): v is Report =>
   ['advances', 'blockers', 'next_actions'].every((k) =>
     arrayOf(v.content && (v.content as ObjectValue)[k], isFinding),
   );
+export const isReportSummary = (v: unknown): v is ReportSummary =>
+  object(v) && textFields(v, 'id', 'provider', 'created_at') && nullableText(v.published_at);
 export const isItem = (v: unknown): v is Item =>
   object(v) &&
   textFields(v, 'key', 'repository', 'title', 'url', 'author', 'state', 'updated_at') &&
@@ -245,12 +249,48 @@ export async function readPublic<T>(
     credentials: 'omit',
     headers: { Accept: 'application/json' },
   });
-  if (response.status === 404 && path === '/reports/latest') return null;
-  if (!response.ok) throw new Error(`Consulta indisponível (HTTP ${response.status}).`);
+  if (response.status === 404 && path.split('?')[0] === '/reports/latest') return null;
+  if (!response.ok) throw new PublicReadError(response.status);
   const value: unknown = await response.json();
   if (!check(value))
     throw new Error('Resposta incompatível com o painel. Tente atualizar em instantes.');
   return value;
+}
+
+export class PublicReadError extends Error {
+  readonly status: number;
+  constructor(status: number) {
+    super(`Consulta indisponível (HTTP ${status}).`);
+    this.status = status;
+  }
+}
+
+export type PublicResourceState<T> = {
+  path: string;
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+};
+export function publicResourceFailure<T>(
+  previous: PublicResourceState<T>,
+  path: string,
+  error: unknown,
+  retain: boolean,
+): PublicResourceState<T> {
+  const transient =
+    error instanceof PublicReadError
+      ? error.status === 429 || error.status >= 500
+      : error instanceof TypeError ||
+        (error instanceof DOMException && ['AbortError', 'TimeoutError'].includes(error.name));
+  const data = retain && transient && previous.path === path ? previous.data : null;
+  return {
+    path,
+    data,
+    loading: false,
+    error: data
+      ? 'Não foi possível atualizar esta seção. Exibindo os dados da última consulta bem-sucedida.'
+      : 'Não foi possível consultar esta seção. Tente atualizar novamente.',
+  };
 }
 export function safeSourceUrl(value: string | null | undefined): string | undefined {
   try {

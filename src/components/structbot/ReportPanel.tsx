@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Bot, FileText } from 'lucide-react';
-import { isPage, isReport } from '../../lib/structbot';
+import { isPage, isReport, isReportSummary, JOURNAL_REQUEST_OPTIONS } from '../../lib/structbot';
 import type { Resource } from './useStructBot';
 import type { Report } from '../../lib/structbot';
 import type { Finding } from '../../lib/structbot';
@@ -57,12 +57,21 @@ function Findings({
 export function ReportPanel({ revision, latest }: { revision: number; latest: Resource<Report> }) {
   const [selected, setSelected] = useState('');
   const selectedReport = usePublicResource(
-    selected ? `/reports/${encodeURIComponent(selected)}` : '/reports/latest',
+    selected
+      ? `/reports/${encodeURIComponent(selected)}?include_sources=false`
+      : '/reports/latest?include_sources=false',
     isReport,
     revision,
     Boolean(selected),
+    JOURNAL_REQUEST_OPTIONS,
   );
-  const history = usePublicResource('/reports?limit=10', isPage(isReport), revision);
+  const history = usePublicResource(
+    '/reports?limit=10&metadata_only=true',
+    isPage(isReportSummary),
+    revision,
+    true,
+    JOURNAL_REQUEST_OPTIONS,
+  );
   const report = selected ? selectedReport : latest;
   const data = report.data;
   return (

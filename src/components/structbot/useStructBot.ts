@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { REFRESH_MS, readPublic } from '../../lib/structbot';
+import { REFRESH_MS, readPublic, publicResourceFailure } from '../../lib/structbot';
 import { subscribeToEvents } from '../../lib/structbot-feed';
 import type { BotEvent } from '../../lib/structbot';
 import type { FeedState } from '../../lib/structbot-feed';
@@ -10,7 +10,10 @@ export function usePublicResource<T>(
   check: (v: unknown) => v is T,
   revision: number,
   enabled = true,
+  options: { retainOnTransientFailure?: boolean; timeoutMs?: number } = {},
 ): Resource<T> {
+  const timeoutMs = options.timeoutMs ?? 15_000;
+  const retain = options.retainOnTransientFailure ?? false;
   const [result, setResult] = useState<Resource<T> & { path: string }>({
     path,
     data: null,
@@ -24,7 +27,7 @@ export function usePublicResource<T>(
     if (!enabled) return;
     let active = true;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15_000);
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
     setResult((previous) => ({
       path,
       data: previous.path === path ? previous.data : null,
@@ -35,14 +38,8 @@ export function usePublicResource<T>(
       .then((data) => {
         if (active) setResult({ path, data, loading: false, error: null });
       })
-      .catch(() => {
-        if (active)
-          setResult({
-            path,
-            data: null,
-            loading: false,
-            error: 'Não foi possível consultar esta seção. Tente atualizar novamente.',
-          });
+      .catch((error: unknown) => {
+        if (active) setResult((previous) => publicResourceFailure(previous, path, error, retain));
       })
       .finally(() => clearTimeout(timeout));
     return () => {
@@ -50,18 +47,23 @@ export function usePublicResource<T>(
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [path, revision, enabled]);
+  }, [path, revision, enabled, timeoutMs, retain]);
   return result.path === path ? result : { data: null, loading: true, error: null };
 }
 export function useDashboard() {
   const [revision, setRevision] = useState(0);
+  const [reportRevision, setReportRevision] = useState(0);
   const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(true);
   const [events, setEvents] = useState<BotEvent[]>([]);
   const [connection, setConnection] = useState<FeedState>('connecting');
   const cursor = useRef(0);
   const active = visible && !paused;
-  const refresh = useCallback(() => setRevision((n) => n + 1), []);
+  const refreshData = useCallback(() => setRevision((n) => n + 1), []);
+  const refresh = useCallback(() => {
+    refreshData();
+    setReportRevision((n) => n + 1);
+  }, [refreshData]);
   useEffect(() => {
     const visibility = () => {
       setVisible(!document.hidden);
@@ -90,7 +92,7 @@ export function useDashboard() {
         if (refreshTimer) return;
         refreshTimer = setTimeout(() => {
           refreshTimer = undefined;
-          refresh();
+          refreshData();
         }, 1_000);
       },
     });
@@ -98,10 +100,12 @@ export function useDashboard() {
       unsubscribe();
       clearTimeout(refreshTimer);
     };
-  }, [active, refresh]);
+  }, [active, refreshData]);
   return {
     revision,
+    reportRevision,
     refresh,
+    refreshData,
     paused,
     setPaused,
     events,

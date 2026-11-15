@@ -31,8 +31,8 @@ export function NewsPanel({ report }: { report: Resource<Report> }) {
       <ResourceNotice resource={report} />
       {!data && !report.loading && !report.error && (
         <Empty>
-          O jornal aparecerá aqui quando o primeiro boletim for publicado. Confira a central de
-          tarefas abaixo.
+          O jornal aparecerá aqui quando houver uma edição disponível. Confira a central de tarefas
+          abaixo.
         </Empty>
       )}
       {data && (
