@@ -49,6 +49,14 @@ Os testes do StructBot cobrem contratos, falhas HTTP/JSON, boletim ausente, par�
 
 O topo do painel agora destaca “Últimas notícias do OpenStruct”, com manchete, abertura, notícias por tema, créditos e referências da edição publicada. `content.news` é opcional no cliente para preservar os boletins v1; nesses casos a abertura utiliza o boletim público existente.
 
+### Leitura diária e análise detalhada
+
+O jornal concentra a leitura editorial. A central de tarefas vem em seguida; recomendações acompanhadas em **Próximos passos** e **Pulso dos projetos** ficam próximas da tabela. **Análise detalhada** vem depois, em largura completa e recolhida inicialmente. Mantém pontos de atenção, próximas ações sugeridas, fontes, limitações e o seletor das últimas dez publicações. O resumo, o texto para a comunidade e a lista de avanços não são repetidos nesse bloco.
+
+Expandir usa o mesmo relatório mais recente já carregado pelo jornal. O histórico só é consultado enquanto a análise estiver aberta; uma edição específica só é solicitada quando selecionada. Recolher cancela essas consultas e suspende sua revalidação. O seletor preserva a escolha ao recolher; o jornal continua na edição mais recente. Os avisos de fonte antiga, resposta inválida e retirada de publicação continuam valendo.
+
+Esta mudança usa as rotas existentes, sem nova configuração ou migração. Próximas propostas de organização estão em [StructBot como apoio à gestão](STRUCTBOT-GESTAO.md).
+
 A seção “Conversas e responsáveis” consulta `/public/conversations` com filtros de projeto/estado e paginação. Mostra papéis por escopo, ofertas de ajuda, responsabilidade declarada/inferida/incerta, discussões, decisões, correções e citações originais. Atribuições oficiais do GitHub aparecem separadamente. Fontes alteradas ou incompletas e análises pendentes/desabilitadas têm estados explícitos. Nenhuma interação dispara IA ou altera GitHub.
 
 Publique o backend com a migração `0002` antes de integrar esta versão do frontend. O roteiro está no repositório `struct-bot`, em `docs/CONVERSAS-E-JORNAL.md`. O painel continua lendo edições antigas durante a atualização; a seção de conversas ficará indisponível enquanto o servidor ainda não oferecer a nova rota.

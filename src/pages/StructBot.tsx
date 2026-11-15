@@ -169,8 +169,9 @@ export function StructBot() {
         <nav className="sb-jump-links" aria-label="Seções do StructBot">
           <a href="#structbot-news">Últimas notícias</a>
           <a href="#structbot-tasks">Central de tarefas</a>
-          <a href="#structbot-report">Boletim</a>
-
+          <a href="#structbot-recommendations">Próximos passos</a>
+          <a href="#structbot-feed">Atividade</a>
+          <a href="#structbot-report">Análise detalhada</a>
           <a href="#structbot-workstreams">Frentes</a>
           <a href="#structbot-releases">Releases</a>
           <a href="#structbot-sources">Fontes</a>
@@ -181,7 +182,7 @@ export function StructBot() {
           refresh={dashboard.refreshData}
         />
         <div className="sb-command-grid">
-          <ReportPanel revision={dashboard.reportRevision} latest={latestReport} />
+          <RecommendationsPanel revision={dashboard.revision} />
           <div className="sb-feed-column">
             <Panel
               id="structbot-feed"
@@ -230,9 +231,9 @@ export function StructBot() {
             </div>
           </div>
         </div>
+        <ReportPanel revision={dashboard.reportRevision} latest={latestReport} />
         <div className="sb-secondary-grid">
           <WorkstreamsPanel revision={dashboard.revision} />
-          <RecommendationsPanel revision={dashboard.revision} />
           <ReleasesPanel revision={dashboard.revision} />
           <EvidencePanel revision={dashboard.revision} />
         </div>
