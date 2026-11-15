@@ -26,6 +26,7 @@ export type Task = {
   ci_summary: string | null;
   status: TaskStatus;
   status_source: string | null;
+  claim_lock?: { reason: string; locked_at: string } | null;
   owner: Contributor | null;
   role: 'review' | 'implementation';
   version: number;
@@ -56,6 +57,7 @@ export type ContributorSession = {
   user: Contributor | null;
   csrf_token: string | null;
   maintainer_repositories: string[];
+  can_manage_task_locks?: boolean;
 };
 export type TaskAction =
   | 'claim'
@@ -67,7 +69,9 @@ export type TaskAction =
   | 'complete'
   | 'reopen'
   | 'reassign'
-  | 'priority';
+  | 'priority'
+  | 'lock_claims'
+  | 'unlock_claims';
 export type TaskHistory = {
   id: string;
   action: string;
@@ -119,6 +123,8 @@ export const actionLabels: Record<TaskAction, string> = {
   reopen: 'Reabrir no painel',
   reassign: 'Reatribuir tarefa',
   priority: 'Definir prioridade',
+  lock_claims: 'Bloquear novas reservas',
+  unlock_claims: 'Liberar novas reservas',
 };
 export const isTask = (v: unknown): v is Task =>
   obj(v) &&
@@ -145,6 +151,9 @@ export const isTask = (v: unknown): v is Task =>
   nullableText(v.status_source) &&
   nullableText(v.ci_summary) &&
   nullableText(v.completion_source) &&
+  (v.claim_lock === undefined ||
+    v.claim_lock === null ||
+    (obj(v.claim_lock) && text(v.claim_lock, 'reason', 'locked_at'))) &&
   [v.draft, v.source_stale, v.reservation_stale].every((x) => typeof x === 'boolean') &&
   (v.owner === null || isContributor(v.owner)) &&
   obj(v.priority) &&
@@ -168,6 +177,7 @@ export const isSession = (v: unknown): v is ContributorSession =>
   (v.user === null || isContributor(v.user)) &&
   nullableText(v.csrf_token) &&
   strings(v.maintainer_repositories) &&
+  (v.can_manage_task_locks === undefined || typeof v.can_manage_task_locks === 'boolean') &&
   (v.user === null
     ? v.csrf_token === null
     : typeof v.csrf_token === 'string' && v.csrf_token.length >= 32);
@@ -273,11 +283,21 @@ export function availableActions(task: Task, session: ContributorSession | null)
   if (!session?.enabled || !session.user) return [];
   const maintainer = session.maintainer_repositories.includes(task.repository);
   const terminal = task.status === 'completed' || task.status === 'closed';
-  if (task.github_state !== 'open') return maintainer ? ['priority'] : [];
+  const lockActions: TaskAction[] =
+    session.can_manage_task_locks === true && task.kind === 'issue'
+      ? task.claim_lock
+        ? ['unlock_claims']
+        : task.github_state === 'open' && !terminal
+          ? ['lock_claims']
+          : []
+      : [];
+  if (task.github_state !== 'open')
+    return [...lockActions, ...(maintainer ? ['priority' as const] : [])];
   const owns = task.owner?.id === session.user.id;
   const actions: TaskAction[] = [];
   if (
     !task.owner &&
+    !task.claim_lock &&
     !terminal &&
     !task.source_stale &&
     (task.kind !== 'pull_request' ||
@@ -301,8 +321,8 @@ export function availableActions(task: Task, session: ContributorSession | null)
       if (!task.source_stale) actions.push('complete');
     }
     if (task.status === 'completed') actions.push('reopen');
-    if (!terminal) actions.push('reassign');
+    if (!terminal && !task.claim_lock) actions.push('reassign');
     actions.push('priority');
   }
-  return actions;
+  return [...actions, ...lockActions];
 }

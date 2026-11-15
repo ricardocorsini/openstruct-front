@@ -71,6 +71,14 @@ Configure no backend `TASK_FRONTEND_URL` para a URL canônica pública (`https:/
 
 Sem login configurado, a tabela é pública e informa que reservas aguardam ativação. Com login, o backend valida propriedade, permissões, versão e concorrência de toda ação. Uma falha de rede não é repetida automaticamente: a tabela é consultada novamente antes de nova tentativa. Um usuário comum não pode concluir/aprovar a própria entrega; enviar a entrega move para revisão.
 
+### Suspender novas reservas
+
+A sessão do backend informa `can_manage_task_locks=true` exclusivamente para a conta GitHub `ricardocorsini` (ID estável 113109199). Somente essa sessão vê os botões **Bloquear novas reservas** e **Liberar novas reservas** na coluna Ações de issues e no formulário de detalhes. O bloqueio exige motivo público com pelo menos 10 caracteres; a liberação permite nota opcional. Ausência da capacidade em servidores antigos oculta os controles.
+
+Todas as pessoas veem o aviso de reservas bloqueadas e o motivo em `claim_lock`; não recebem a ação de assumir ou reatribuir enquanto a restrição existir. O atalho Bloqueadas inclui essas issues. A restrição preserva trabalhos já assumidos e seus impedimentos; o backend decide as permissões e impede reservas por chamadas diretas. A confirmação atualiza a tabela e gera os eventos `task.lock_claims` / `task.unlock_claims`.
+
+Este recurso requer o backend com migração **0004** antes do deploy do frontend; não adiciona variáveis ao `.env`. No servidor: `git pull --ff-only`, `docker compose build`, `docker compose run --rm migrate` e `docker compose up -d --force-recreate api worker`.
+
 A tabela consulta o banco a cada visita, em revalidações de um minuto e ao receber eventos. O autor da ação atualiza a tabela após a confirmação; outros navegadores recebem eventos do backend e revalidam com agrupamento de um segundo. Queda do stream mantém fallback de consulta de eventos. Isso não envia requisições OpenAI pelo navegador.
 
 ### Validação

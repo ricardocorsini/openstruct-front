@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CircleDot, GitPullRequest, LogIn, ListTodo, Search, X } from 'lucide-react';
+import {
+  CircleDot,
+  GitPullRequest,
+  LockKeyhole,
+  LogIn,
+  ListTodo,
+  Search,
+  UnlockKeyhole,
+  X,
+} from 'lucide-react';
 import { isConversation } from '../../lib/structbot-context';
 import { ciLabels, isCountedPage, queryPath } from '../../lib/structbot';
 import type { Repository } from '../../lib/structbot';
@@ -81,6 +90,7 @@ export function TasksPanel({
   const [draft, setDraft] = useState('');
   const [ownerDraft, setOwnerDraft] = useState('');
   const [selected, setSelected] = useState<Task | null>(null);
+  const [initialAction, setInitialAction] = useState<TaskAction | undefined>();
   const [pending, setPending] = useState<string | null>(null);
   const [notice, setNotice] = useState<{ text: string; error: boolean } | null>(() =>
     typeof window !== 'undefined' &&
@@ -100,6 +110,10 @@ export function TasksPanel({
     setFilters(emptyFilters);
     setDraft('');
     setOwnerDraft('');
+  };
+  const openDetails = (task: Task, action?: TaskAction) => {
+    setInitialAction(action);
+    setSelected(task);
   };
   const act = async (
     task: Task,
@@ -353,6 +367,9 @@ export function TasksPanel({
                   const primary = (['claim', 'resume', 'submit'] as const).find((action) =>
                     actions.includes(action),
                   );
+                  const lockAction = (['lock_claims', 'unlock_claims'] as const).find((action) =>
+                    actions.includes(action),
+                  );
                   return (
                     <tr
                       key={task.key}
@@ -406,11 +423,21 @@ export function TasksPanel({
                         )}
                       </td>
                       <td>
-                        <span
-                          className={`sb-badge ${task.status === 'blocked' ? 'sb-warning' : task.status === 'completed' ? 'sb-good' : ''}`}
-                        >
-                          {taskStatusLabels[task.status]}
-                        </span>
+                        {task.claim_lock && (
+                          <>
+                            <span className="sb-badge sb-warning">
+                              <LockKeyhole size={12} aria-hidden="true" /> Reservas bloqueadas
+                            </span>
+                            <small className="sb-task-warning">{task.claim_lock.reason}</small>
+                          </>
+                        )}
+                        {(!task.claim_lock || task.status !== 'blocked' || task.owner) && (
+                          <span
+                            className={`sb-badge ${task.status === 'blocked' ? 'sb-warning' : task.status === 'completed' ? 'sb-good' : ''}`}
+                          >
+                            {taskStatusLabels[task.status]}
+                          </span>
+                        )}
                         {task.kind === 'pull_request' && task.github_state === 'closed' && (
                           <small>Fechado sem integração</small>
                         )}
@@ -470,16 +497,30 @@ export function TasksPanel({
                               onClick={() =>
                                 primary === 'claim' || primary === 'resume'
                                   ? void act(task, primary, {})
-                                  : setSelected(task)
+                                  : openDetails(task)
                               }
                             >
                               {pending === task.key ? 'Salvando…' : actionLabel(primary, task)}
                             </button>
                           )}
+                          {lockAction && (
+                            <button
+                              className="sb-button"
+                              disabled={pending !== null}
+                              onClick={() => openDetails(task, lockAction)}
+                            >
+                              {lockAction === 'lock_claims' ? (
+                                <LockKeyhole size={14} aria-hidden="true" />
+                              ) : (
+                                <UnlockKeyhole size={14} aria-hidden="true" />
+                              )}
+                              {actionLabel(lockAction, task)}
+                            </button>
+                          )}
                           <button
                             className="sb-button"
                             disabled={pending !== null}
-                            onClick={() => setSelected(task)}
+                            onClick={() => openDetails(task)}
                           >
                             Detalhes{actions.length > 0 && !primary ? ' / ações' : ''}
                           </button>
@@ -512,7 +553,9 @@ export function TasksPanel({
       </p>
       {selected && (
         <TaskDetails
+          key={selected.key}
           task={selected}
+          initialAction={initialAction}
           session={identity.session}
           revision={revision}
           busy={pending !== null}
@@ -526,6 +569,7 @@ export function TasksPanel({
 
 function TaskDetails({
   task,
+  initialAction,
   session,
   revision,
   busy,
@@ -533,6 +577,7 @@ function TaskDetails({
   act,
 }: {
   task: Task;
+  initialAction?: TaskAction;
   session: ContributorSession | null;
   revision: number;
   busy: boolean;
@@ -551,7 +596,11 @@ function TaskDetails({
   const dialog = useRef<HTMLDialogElement>(null);
   const actions = availableActions(task, session);
   const [action, setAction] = useState<TaskAction>(
-    actions.includes('submit') ? 'submit' : actions[0] || 'claim',
+    initialAction && actions.includes(initialAction)
+      ? initialAction
+      : actions.includes('submit')
+        ? 'submit'
+        : actions[0] || 'claim',
   );
   const [note, setNote] = useState('');
   const [pr, setPr] = useState(task.delivery?.url || '');
@@ -576,7 +625,15 @@ function TaskDetails({
     return () => element?.close();
   }, []);
   const minNote =
-    ['block', 'request_changes', 'complete', 'reopen', 'reassign', 'priority'].includes(action) ||
+    [
+      'block',
+      'request_changes',
+      'complete',
+      'reopen',
+      'reassign',
+      'priority',
+      'lock_claims',
+    ].includes(action) ||
     (action === 'submit' && task.kind === 'pull_request')
       ? 10
       : 0;
@@ -611,6 +668,13 @@ function TaskDetails({
       <p className="sb-footnote">
         Prioridade {priorityLabels[task.priority.level]}: {task.priority.rationale}
       </p>
+      {task.claim_lock && (
+        <div className="sb-notice sb-warning" role="status">
+          <strong>Novas reservas bloqueadas por @ricardocorsini</strong>
+          <p>{task.claim_lock.reason}</p>
+          <small>Aguarde a liberação para assumir esta issue.</small>
+        </div>
+      )}
       {task.kind === 'pull_request' && (
         <p className="sb-footnote">
           Autor: @{task.author || 'não informado'} ·{' '}
@@ -728,9 +792,13 @@ function TaskDetails({
               Este registro será público.{' '}
               {action === 'release'
                 ? 'A reserva será liberada; atribuições existentes no GitHub continuam visíveis.'
-                : action === 'submit'
-                  ? 'A entrega aguardará revisão e não encerrará a issue no GitHub.'
-                  : 'A ação será registrada com seu usuário GitHub.'}
+                : action === 'lock_claims'
+                  ? 'Novas reservas ficam suspensas até você liberar esta issue. Quem já assumiu continua responsável.'
+                  : action === 'unlock_claims'
+                    ? 'O bloqueio de novas reservas será removido. O responsável e os impedimentos do trabalho serão preservados.'
+                    : action === 'submit'
+                      ? 'A entrega aguardará revisão e não encerrará a issue no GitHub.'
+                      : 'A ação será registrada com seu usuário GitHub.'}
             </p>
             <button type="submit" className="sb-button sb-primary">
               {busy ? 'Salvando…' : actionLabel(action, task)}

@@ -117,6 +117,70 @@ test('contributor session is requested directly from the fixed API with credenti
   assert.equal(captured.options.cache, 'no-store');
   assert.equal(LOGIN_URL, 'https://api.openstruct.com.br/api/v1/auth/github/start');
 });
+test('only the server-authorized session sees issue reservation lock controls', () => {
+  const manager = {
+    ...session,
+    user: { ...user, id: 113109199, login: 'ricardocorsini' },
+    can_manage_task_locks: true,
+  };
+  const locked = {
+    ...task,
+    status: 'blocked',
+    claim_lock: { reason: 'Aguardando a definição do escopo.', locked_at: task.updated_at },
+  };
+  assert.ok(availableActions(task, manager).includes('lock_claims'));
+  assert.deepEqual(availableActions(locked, manager), ['unlock_claims']);
+  for (const visitor of [null, session, maintained, { ...manager, can_manage_task_locks: false }]) {
+    assert.ok(!availableActions(task, visitor).includes('lock_claims'));
+    assert.ok(!availableActions(locked, visitor).includes('unlock_claims'));
+    assert.ok(!availableActions(locked, visitor).includes('claim'));
+    assert.ok(!availableActions(locked, visitor).includes('reassign'));
+  }
+  assert.ok(!availableActions({ ...task, source_stale: true }, manager).includes('claim'));
+  assert.ok(availableActions({ ...task, source_stale: true }, manager).includes('lock_claims'));
+  assert.ok(!availableActions({ ...task, kind: 'pull_request' }, manager).includes('lock_claims'));
+  assert.ok(
+    !availableActions({ ...task, github_state: 'closed', status: 'closed' }, manager).includes(
+      'lock_claims',
+    ),
+  );
+  assert.deepEqual(
+    availableActions({ ...locked, github_state: 'closed', status: 'closed' }, manager),
+    ['unlock_claims'],
+  );
+  assert.ok(availableActions({ ...locked, owner: user }, session).includes('resume'));
+  assert.equal(isTask(locked), true);
+  assert.equal(isTask({ ...locked, claim_lock: { reason: 'missing timestamp' } }), false);
+  assert.equal(isTask({ ...locked, claim_lock: true }), false);
+  assert.equal(isSession(manager), true);
+  assert.equal(isSession({ ...manager, can_manage_task_locks: 'true' }), false);
+});
+test('reservation lock actions keep the existing CSRF, version and public reason contract', async () => {
+  const locked = {
+    ...task,
+    status: 'blocked',
+    version: 1,
+    claim_lock: { reason: 'Aguardando a definição do escopo.', locked_at: task.updated_at },
+  };
+  let captured;
+  await sendTaskAction(
+    task,
+    session,
+    'lock_claims',
+    { note: locked.claim_lock.reason },
+    async (_url, options) => {
+      captured = options;
+      return Response.json(locked);
+    },
+  );
+  assert.deepEqual(JSON.parse(captured.body), {
+    action: 'lock_claims',
+    expected_version: 0,
+    note: locked.claim_lock.reason,
+  });
+  assert.equal(captured.headers['X-CSRF-Token'], session.csrf_token);
+  assert.equal(captured.credentials, 'include');
+});
 test('mutations send optimistic version and CSRF, cannot spoof actor or choose another origin, and are never retried', async () => {
   let captured;
   const result = await sendTaskAction(task, session, 'claim', {}, async (url, options) => {

@@ -359,6 +359,8 @@ export const eventLabels: Record<string, string> = {
   'task.reopen': 'tarefa / reaberta',
   'task.reassign': 'tarefa / reatribuída',
   'task.priority': 'tarefa / prioridade definida',
+  'task.lock_claims': 'issue / novas reservas bloqueadas',
+  'task.unlock_claims': 'issue / novas reservas liberadas',
   'task.github_sync': 'tarefa / atualizada pelo GitHub',
   'conversation.interpreted': 'conversa / interpretada',
   'conversation.corrected': 'conversa / corrigida',
