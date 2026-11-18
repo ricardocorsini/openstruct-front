@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { ArrowUpRight, GitFork, Menu, Moon, Sun, X, ArrowRight, Download, Bot } from 'lucide-react';
+import { ArrowUpRight, GitFork, Menu, Moon, Sun, X, ArrowRight, Download } from 'lucide-react';
 import { Brand, Mark } from './Brand';
 import { useExperience } from './Experience';
 import { site } from '../lib/config';
@@ -108,9 +108,11 @@ export function Layout() {
             <NavLink to={site.developmentPath} onClick={close}>
               Desenvolvimento
             </NavLink>
+            {/*
             <NavLink to="/structbot" className="nav-structbot" onClick={close}>
               <Bot size={16} aria-hidden="true" /> StructBot
             </NavLink>
+            */}
             <Link to="/launcher" className="button button-primary mobile-launch" onClick={close}>
               Baixar Launcher <Download size={15} />
             </Link>
