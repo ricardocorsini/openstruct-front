@@ -62,8 +62,8 @@ function fixture(overrides = () => null) {
 
 test('exports only selected public fields, redacts emails and rejects unknown contract keys', async () => {
   const { snapshot, requests } = await collectGithub({ fetchImpl: fixture(), now });
-  assert.equal(requests, 45);
-  assert.equal(snapshot.repositories.length, 6);
+  assert.equal(requests, GITHUB_REPOSITORIES.length * 7 + 3);
+  assert.equal(snapshot.repositories.length, GITHUB_REPOSITORIES.length);
   assert.ok(snapshot.repositories.every((entry) => entry.status === 'ready'));
   const json = JSON.stringify(snapshot);
   assert.ok(!json.includes('@') && !json.includes('not exported') && !json.includes('token'));
@@ -115,7 +115,7 @@ test('follows Link pagination, filters PRs out of issues and declares a bounded 
       });
     }),
   });
-  assert.equal(result.requests, 51);
+  assert.equal(result.requests, GITHUB_REPOSITORIES.length * 8 + 3);
   assert.deepEqual(
     result.snapshot.repositories[0].lists.issues.items.map((item) => item.id),
     ['1', '2'],
@@ -148,7 +148,7 @@ test('304 reuses sanitized page and pagination, with a fresh visibility check ev
       }
     }),
   });
-  assert.equal(metadataCalls, 6);
+  assert.equal(metadataCalls, GITHUB_REPOSITORIES.length);
   assert.equal(second.snapshot.repositories[0].lists.issues.items.length, 1);
   assert.equal(second.snapshot.repositories[0].lists.issues.state, 'fresh');
   assert.equal(

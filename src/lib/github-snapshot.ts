@@ -13,9 +13,14 @@ export const GITHUB_REPOSITORIES = [
   'ricardocorsini/mola-struct',
   'ricardocorsini/armadura-struct',
   'itanervale/GEOSPT-STRUCT',
+  'ricardocorsini/geo-struct',
   'ricardocorsini/openstruct-catalog',
 ] as const;
 export type PublicRepository = (typeof GITHUB_REPOSITORIES)[number];
+const REPOSITORIES_ADDED_AFTER_INITIAL_SNAPSHOT = new Set<PublicRepository>([
+  'itanervale/GEOSPT-STRUCT',
+  'ricardocorsini/geo-struct',
+]);
 export const ACTIVITY_KINDS = ['issues', 'pulls', 'milestones', 'contributors'] as const;
 export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
 export const SNAPSHOT_MAX_BYTES = 1_000_000;
@@ -189,7 +194,7 @@ export function validateGithubSnapshot(value: unknown): GithubSnapshot {
   if (
     ![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(root.schemaVersion as number) ||
     !Array.isArray(root.repositories) ||
-    ![GITHUB_REPOSITORIES.length, GITHUB_REPOSITORIES.length - 1].includes(root.repositories.length)
+    root.repositories.length > GITHUB_REPOSITORIES.length
   )
     throw new Error('Invalid snapshot');
   date(root.generatedAt);
@@ -514,19 +519,13 @@ export function validateGithubSnapshot(value: unknown): GithubSnapshot {
       }
     }
   }
-  if (
-    GITHUB_REPOSITORIES.some(
-      (repository) => repository !== 'itanervale/GEOSPT-STRUCT' && !seen.has(repository),
-    )
-  )
+  const missing = GITHUB_REPOSITORIES.filter((repository) => !seen.has(repository));
+  if (missing.some((repository) => !REPOSITORIES_ADDED_AFTER_INITIAL_SNAPSHOT.has(repository)))
     throw new Error('Missing required repository');
   const input = value as GithubSnapshot;
-  const validated = seen.has('itanervale/GEOSPT-STRUCT')
-    ? input
-    : {
-        ...input,
-        repositories: [...input.repositories, emptyRepository('itanervale/GEOSPT-STRUCT')],
-      };
+  const validated = missing.length
+    ? { ...input, repositories: [...input.repositories, ...missing.map(emptyRepository)] }
+    : input;
   if (root.schemaVersion === 9) return validated;
   // Earlier milestones were open-only and lacked closed counters/state. Unknown is not zero.
   return {

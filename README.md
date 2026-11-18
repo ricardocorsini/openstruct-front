@@ -1,6 +1,6 @@
 # OpenStruct
 
-Frontend do ecossistema OpenStruct: ferramentas abertas para engenharia estrutural. O site apresenta o projeto, o catálogo e as páginas do ConsoloStruct, MolaStruct, ArmaduraStruct e GeoSPT, além das propostas de aplicativos futuros.
+O frontend do ecossistema OpenStruct apresenta ferramentas abertas para engenharia estrutural e geotécnica. O site reúne o catálogo e as páginas de ConsoloStruct, MolaStruct, ArmaduraStruct, GeoSPT e GeoStruct, além das propostas de aplicativos futuros.
 
 Os acessos institucionais levam à central `/development`, onde cada produto tem
 seu próprio repositório público. O frontend continua público e aparece explicitamente
@@ -33,16 +33,20 @@ O projeto usa React, TypeScript, Vite e React Router. O CSS é próprio. As font
 | `/apps/molastruct`          | MolaStruct publicado: entradas, métodos, matriz 6×6, capacidade e limites           |
 | `/apps/armadurastruct`      | ArmaduraStruct 0.2.0: fluxo CAD, formatos, saídas, licença e limites                |
 | `/apps/geosptstruct`       | GeoSPT: sondagens, capacidade de carga de estacas e memoriais                       |
+| `/apps/geostruct`          | GeoStruct 0.2.0, estabilidade de taludes, projeto padrão e instalação               |
 | `/apps/anchorstruct`       | Proposta para chumbadores, com desenvolvimento não iniciado e arte “Em breve”       |
 | `/apps/slopestruct`        | Proposta para taludes e contenções, com desenvolvimento não iniciado e arte “Em breve” |
 | `/launcher`                 | Downloads oficiais Windows/Linux, versão publicada e instruções de instalação       |
 | `/docs`                     | Central de manuais por sistema, com busca e [guia de manutenção](docs/MANUAIS.md)   |
+| `/docs/geostruct`          | Primeiros passos no GeoStruct e referências da versão publicada                     |
 | `/community`                | Formas de contribuir e acompanhar o projeto                                         |
 | `/community/como-colaborar` | Manual público passo a passo, com percursos sem código e de código no frontend      |
 | `/development/contribuir-com-ia` | Guia com ChatGPT/Codex, Claude e Gemini: ambiente, modelo, fork, issue, prompt e PR |
 | Outros endereços            | Página 404 com navegação de retorno                                                 |
 
-ConsoloStruct, MolaStruct, ArmaduraStruct e GeoSPT possuem páginas de produto e aparecem na central de aplicativos. O horizonte futuro contém somente AnchorStruct e SlopeStruct, com páginas informativas, estado “A iniciar” e desenvolvimento não iniciado. Seus cards aparecem somente ao incluir o horizonte futuro; não há repositório, versão, plataforma, download ou data de lançamento. Veja as [decisões de apresentação das propostas](docs/PRODUTOS-PLANEJADOS.md).
+ConsoloStruct, MolaStruct, ArmaduraStruct, GeoSPT e GeoStruct possuem páginas de produto e aparecem na central de aplicativos. A arte V2 fornecida para o GeoStruct fica em `public/assets/geostruct-hercules-v2.webp`.
+
+O horizonte futuro contém somente AnchorStruct e SlopeStruct, com páginas informativas, estado “A iniciar” e desenvolvimento não iniciado. Seus cards aparecem somente ao incluir o horizonte futuro; não há repositório, versão, plataforma, download ou data de lançamento. Veja as [decisões de apresentação das propostas](docs/PRODUTOS-PLANEJADOS.md).
 
 ## Struct Launcher e downloads
 
@@ -69,7 +73,7 @@ validação de formato do feed como uma verificação criptográfica.
 Os downloads não exigem login GitHub. A sugestão de sistema é apenas visual: os dois formatos
 ficam visíveis, inclusive no celular. macOS/ARM não são anunciados como alvos nativos.
 
-ConsoloStruct, MolaStruct e ArmaduraStruct usam o catálogo público assinado para
+Os aplicativos usam o catálogo público assinado para
 versão e disponibilidade. `src/lib/apps.ts` registra a versão que fundamenta a
 descrição técnica revisada. A disponibilidade dos produtos é separada da maturidade
 de seus métodos e da versão mais recente de seus códigos.
@@ -113,7 +117,7 @@ fonte não autorizada, falha parcial, cache e limites de consulta. Consulte
 
 ## Instalação dos aplicativos
 
-O caminho principal em ConsoloStruct, MolaStruct e ArmaduraStruct é **Instalar pelo
+O caminho principal nas páginas dos aplicativos é **Instalar pelo
 Struct Launcher**. A página encaminha a `/launcher`; quem já instalou o gerenciador
 pode abri-lo no computador e escolher o aplicativo na biblioteca. O site não tenta
 abrir protocolos locais nem inicia downloads automaticamente.
@@ -162,7 +166,7 @@ ser usadas: os pacotes oficiais devem passar pelo catálogo assinado.
 
 ## Registro editorial dos produtos
 
-Os seis itens do catálogo usam uma fonte tipada e validada, incluindo os dois
+Os itens do catálogo usam uma fonte tipada e validada, incluindo os dois
 produtos em planejamento. Versão de código, versão distribuída, maturidade,
 plataformas e proveniência são campos independentes. Home, catálogo, diálogo e
 páginas de produto compartilham identidade e rótulo de disponibilidade.
@@ -358,7 +362,7 @@ labels configuradas em cada repositório e caminhos reais de documentação, exe
 e revisão visual quando não há oportunidades. Veja [critérios, fontes e manutenção](docs/PRIMEIRAS-CONTRIBUICOES.md).
 
 A página de comunidade lê um snapshot público de atividade, sem token no navegador.
-A coleta por Actions confirma a visibilidade dos seis repositórios autorizados, normaliza os dados,
+A coleta por Actions confirma a visibilidade dos repositórios autorizados, normaliza os dados,
 usa ETag e limites de paginação, e publica JSON validado na branch `github-data`,
 acompanhado de uma configuração fixa que impede deploys dessa branch na Vercel.
 Leitura e escrita usam jobs com permissões separadas. O catálogo assinado de downloads permanece independente.
@@ -368,7 +372,7 @@ Consulte [contrato, limites, cache e manutenção](docs/GITHUB-PUBLICO.md) e o
 
 ## Central de desenvolvimento
 
-A rota `/development` reúne os seis repositórios públicos, com seleção por repositório na URL, contagens de itens únicos no recorte de issues/PRs, releases estáveis e datas por fonte. Falhas e dados antigos são identificados sem esconder a navegação. As versões de instalação continuam vindo do catálogo assinado, separadas das publicações do código.
+A rota `/development` reúne os repositórios públicos, com seleção por repositório na URL, contagens de itens únicos no recorte de issues/PRs, releases estáveis e datas por fonte. Falhas e dados antigos são identificados sem esconder a navegação. As versões de instalação continuam vindo do catálogo assinado, separadas das publicações do código.
 
 Veja [cobertura, contrato v2 e validação](docs/CENTRAL-DESENVOLVIMENTO.md).
 

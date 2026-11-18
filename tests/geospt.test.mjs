@@ -67,18 +67,19 @@ test('a chave compartilhada do publicador não permite usar a assinatura de Arma
   assert.equal(result.products.armadurastruct.status, 'ready');
 });
 
-test('snapshots anteriores preservam as fontes conhecidas e acrescentam GeoSPT sem inventar atividade', () => {
+test('snapshots anteriores preservam fontes conhecidas e acrescentam apps sem inventar atividade', () => {
   const old = emptyGithubSnapshot();
-  old.repositories = old.repositories.filter(
-    (repo) => repo.repository !== 'itanervale/GEOSPT-STRUCT',
-  );
+  const added = ['itanervale/GEOSPT-STRUCT', 'ricardocorsini/geo-struct'];
+  old.repositories = old.repositories.filter((repo) => !added.includes(repo.repository));
   const migrated = validateGithubSnapshot(old);
-  assert.equal(migrated.repositories.length, 6);
-  assert.deepEqual(migrated.repositories.slice(0, 5), old.repositories);
-  const geo = migrated.repositories.find((repo) => repo.repository === 'itanervale/GEOSPT-STRUCT');
-  assert.equal(geo.visibility, 'unknown');
-  assert.equal(geo.status, 'unavailable');
-  assert.equal(geo.lists.contributors.items.length, 0);
+  assert.equal(migrated.repositories.length, old.repositories.length + added.length);
+  assert.deepEqual(migrated.repositories.slice(0, old.repositories.length), old.repositories);
+  for (const repository of added) {
+    const geo = migrated.repositories.find((repo) => repo.repository === repository);
+    assert.equal(geo.visibility, 'unknown');
+    assert.equal(geo.status, 'unavailable');
+    assert.equal(geo.lists.contributors.items.length, 0);
+  }
   const missing = emptyGithubSnapshot();
   missing.repositories = missing.repositories.filter(
     (repo) => repo.repository !== 'ricardocorsini/consolo-struct',

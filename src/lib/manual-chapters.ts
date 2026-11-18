@@ -1,6 +1,6 @@
 import { validateAppRegistry } from './app-registry.ts';
 import type { CurrentApp, SourceReference } from './app-registry.ts';
-import { apps, currentApps } from './apps.ts';
+import { apps, currentApps, getCurrentApp } from './apps.ts';
 import { compareVersions } from './catalog.ts';
 import { releaseVersionPattern } from './release-history-contract.ts';
 
@@ -384,6 +384,7 @@ const geoSptGuide = githubSource(
   '5f5cded75e94dbce2bea90eb685deef74d1dfd1f',
   'README.md',
 );
+const geostruct = getCurrentApp('geostruct');
 
 type InitialSampleChapter = Pick<
   ManualChapter,
@@ -394,19 +395,20 @@ function initialSampleEdition(
   appId: string,
   coverage: ManualCoverage,
   chapters: InitialSampleChapter[],
+  reviewedAt = initialReviewDate,
 ): ManualEdition {
   return {
     id: 'edicao-1',
     title: 'Edição 1',
     status: 'sample',
-    reviewedAt: initialReviewDate,
+    reviewedAt,
     coverage,
     chapters: chapters.map((chapter, index) => ({
       ...chapter,
       order: index + 1,
       source: `${appId}/${chapter.slug}.md`,
       status: 'sample',
-      reviewedAt: initialReviewDate,
+      reviewedAt,
     })),
   };
 }
@@ -479,6 +481,26 @@ const appManuals: Partial<Record<string, Pick<ManualSystem, 'currentEditionId' |
           sources: [geoSptGuide],
         },
       ]),
+    ],
+  },
+  geostruct: {
+    currentEditionId: 'edicao-1',
+    editions: [
+      initialSampleEdition(
+        'geostruct',
+        { version: '0.2.0', sources: [geostruct.documentation] },
+        [
+          {
+            slug: 'apresentacao',
+            title: 'Primeiros passos no GeoStruct',
+            summary:
+              'Abra o projeto padrão e compare as análises de círculo fixo e busca circular.',
+            keywords: ['GeoStruct', 'talude', 'Fellenius', 'Bishop', 'busca circular'],
+            sources: [geostruct.documentation],
+          },
+        ],
+        geostruct.editorial.reviewedAt,
+      ),
     ],
   },
 };

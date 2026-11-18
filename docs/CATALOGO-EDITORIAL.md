@@ -1,12 +1,11 @@
 # Registro editorial dos aplicativos
 
-`src/lib/apps.ts` é a fonte única dos seis produtos apresentados no site. Não é um
-feed de atualização. Seus dados foram revisados em **07/11/2026** a partir dos
+`src/lib/apps.ts` reúne o registro editorial dos produtos apresentados no site. Seus dados foram revisados a partir dos
 repositórios **públicos**, tags e catálogo de distribuição indicados em cada entrada.
 O registro não contém conteúdo do repositório privado do Launcher.
-Em 12/11/2026, foram incluídas as propostas AnchorStruct e SlopeStruct. Após a
-revisão do horizonte pelo mantenedor, o catálogo contém quatro produtos atuais e
-duas propostas planejadas. A data é de revisão editorial, sem previsão de lançamento.
+Em 12/11/2026, foram incluídas as propostas AnchorStruct e SlopeStruct. Com a
+inclusão do GeoStruct em 18/11/2026, o catálogo contém cinco produtos atuais e
+duas propostas planejadas.
 
 `src/lib/config.ts` guarda somente configuração do site e integrações opcionais de
 implantação. Os tipos, a validação e os rótulos derivados ficam em

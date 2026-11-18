@@ -70,6 +70,19 @@ export const contributionPolicies: Record<PublicRepository, ContributionPolicy> 
     reviewedRef: '5f5cded75e94dbce2bea90eb685deef74d1dfd1f',
     reviewedAt: '2026-11-10',
   },
+  'ricardocorsini/geo-struct': {
+    labels: ['good first issue', 'help wanted'],
+    guide: {
+      url: 'https://github.com/ricardocorsini/geo-struct/blob/6fe17367ba9bf85d8ddccc42cbba23631ae58253/CONTRIBUTING.md',
+      label: 'Guia de contribuição',
+    },
+    documentation:
+      'https://github.com/ricardocorsini/geo-struct/blob/6fe17367ba9bf85d8ddccc42cbba23631ae58253/docs/GUIA-DE-USO.md',
+    examples:
+      'https://github.com/ricardocorsini/geo-struct/tree/6fe17367ba9bf85d8ddccc42cbba23631ae58253/examples',
+    reviewedRef: '6fe17367ba9bf85d8ddccc42cbba23631ae58253',
+    reviewedAt: '2026-11-18',
+  },
   'ricardocorsini/openstruct-catalog': {
     labels: ['good first issue', 'help wanted'],
     guide: {

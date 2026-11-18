@@ -4,7 +4,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { PublicDiscussionText } from '../src/components/PublicDiscussionText.ts';
 import { collectGithub } from '../scripts/github-collector.mjs';
-import { validateGithubSnapshot } from '../src/lib/github-snapshot.ts';
+import { GITHUB_REPOSITORIES, validateGithubSnapshot } from '../src/lib/github-snapshot.ts';
 const at = '2026-11-07T21:00:00Z';
 const now = () => Date.parse(at);
 const repository = 'ricardocorsini/openstruct-front';
@@ -98,7 +98,7 @@ const collect = (fetchImpl = api(), previous) =>
 
 test('collects bounded recent issue and PR details with separate conversation/review and public permalinks', async () => {
   const { snapshot, requests, cache } = await collect();
-  assert.equal(requests, 50); // Baseline 35 + 2 issue + 3 PR requests, only on the selected repo.
+  assert.equal(requests, GITHUB_REPOSITORIES.length * 7 + 3 + 5);
   const details = snapshot.repositories[0].discussions;
   assert.equal(details.length, 2);
   const pr = details.find((d) => d.kind === 'pull');

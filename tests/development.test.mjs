@@ -70,8 +70,9 @@ test('each public product and infrastructure source keeps its identity; private 
   );
   assert.ok(!developmentSources.some((source) => source.repository.includes('launcher-struct')));
   assert.equal(selectDevelopmentSources('mola-struct').length, 1);
+  assert.equal(selectDevelopmentSources('geo-struct')[0]?.appRoute, '/apps/geostruct');
   for (const invalid of [null, '', 'private', 'ricardocorsini/launcher-struct'])
-    assert.equal(selectDevelopmentSources(invalid).length, 6);
+    assert.equal(selectDevelopmentSources(invalid).length, GITHUB_REPOSITORIES.length);
 });
 
 test('counts unique open items in the slice, not the combined GitHub counter, and separates PRs', () => {
@@ -88,7 +89,7 @@ test('counts unique open items in the slice, not the combined GitHub counter, an
   const view = developmentView(snapshot, developmentSources, now);
   assert.equal(view.issues.count, 2); // #1 from two different repositories.
   assert.equal(view.pulls.count, 1); // #2 is a PR, never counted again as an issue.
-  assert.equal(view.issues.knownSources, 6);
+  assert.equal(view.issues.knownSources, GITHUB_REPOSITORIES.length);
   const selected = developmentView(snapshot, selectDevelopmentSources('openstruct-front'), now);
   assert.equal(selected.issues.count, 1);
   assert.equal(selected.pulls.count, 1);
@@ -107,7 +108,7 @@ test('unknown data is not zero; partial failures preserve the other sources and 
   snapshot.repositories[1].lists.issues.truncated = true;
   const view = developmentView(snapshot, developmentSources, now);
   assert.equal(view.issues.count, 1);
-  assert.equal(view.issues.knownSources, 5);
+  assert.equal(view.issues.knownSources, GITHUB_REPOSITORIES.length - 1);
   assert.equal(view.issues.unavailableSources, 1);
   assert.equal(view.issues.truncatedSources, 1);
   assert.equal(view.repositories[0].issues.state, 'unavailable');
@@ -127,10 +128,10 @@ test('real empty lists are zero; source errors and old checks remain distinct', 
   assert.equal(view.pulls.staleSources, 0);
   assert.equal(
     developmentView(snapshot, developmentSources, now + SNAPSHOT_STALE_MS + 1).pulls.staleSources,
-    6,
+    GITHUB_REPOSITORIES.length,
   );
   const offline = developmentView(snapshot, developmentSources, now, true);
-  assert.equal(offline.pulls.staleSources, 6);
+  assert.equal(offline.pulls.staleSources, GITHUB_REPOSITORIES.length);
   assert.equal(offline.repositories[0].release.state, 'stale');
 });
 

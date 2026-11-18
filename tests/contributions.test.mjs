@@ -6,6 +6,7 @@ import {
   SNAPSHOT_STALE_MS,
 } from '../src/lib/github-snapshot.ts';
 import { contributionPolicies, selectFirstContributions } from '../src/lib/contributions.ts';
+import { currentApps } from '../src/lib/apps.ts';
 const time = Date.parse('2026-11-07T22:00:00Z');
 const at = new Date(time).toISOString();
 function fixture() {
@@ -143,14 +144,12 @@ test('each opportunity links directly to its own reviewed guide, with alternativ
   const snapshot = fixture();
   for (const repo of snapshot.repositories) repo.issueDetails.open.items = [issue(repo, 1)];
   for (const row of selectFirstContributions(snapshot, time).opportunities) {
+    const app = currentApps.find(({ id }) => id === row.source.appId);
     assert.ok(row.policy.guide.url.startsWith(row.source.url + '/blob/'));
     assert.ok(row.policy.documentation.startsWith(row.source.url + '/blob/'));
     if (row.policy.examples) assert.ok(row.policy.examples.startsWith(row.source.url + '/'));
     assert.match(row.policy.reviewedRef, /^[a-f0-9]{40}$/);
-    assert.equal(
-      row.policy.reviewedAt,
-      row.source.repository === 'itanervale/GEOSPT-STRUCT' ? '2026-11-10' : '2026-11-07',
-    );
+    assert.equal(row.policy.reviewedAt, app?.editorial.reviewedAt ?? '2026-11-07');
     assert.ok(
       row.policy.guide.label.includes('README') ||
         row.policy.guide.label === 'Guia de contribuição',

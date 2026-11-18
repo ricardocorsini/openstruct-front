@@ -165,7 +165,7 @@ test('coverage distinguishes zero from unavailable, stale and bounded slices per
   repo.issueDetails.closed = { state: 'unavailable', checkedAt: null, items: [], truncated: false };
   repo.issueDetails.open.truncated = true;
   const all = select(snapshot, { ...defaultIssueFilters, state: 'all' });
-  assert.equal(all.knownCollections, 11);
+  assert.equal(all.knownCollections, developmentSources.length * 2 - 1);
   assert.equal(all.total, 0);
   assert.equal(all.coverage[1].state, 'unavailable');
   assert.equal(all.coverage[0].truncated, true);
@@ -296,7 +296,7 @@ function api(overrides = () => null) {
 
 test('collector exports separate state slices and metadata, excludes every pull_request key, and preserves open summary', async () => {
   const result = await collectGithub({ now: () => time, fetchImpl: api() });
-  assert.equal(result.requests, 45);
+  assert.equal(result.requests, GITHUB_REPOSITORIES.length * 7 + 3);
   const repo = result.snapshot.repositories[0];
   assert.equal(repo.issueDetails.open.items.length, 1);
   assert.equal(repo.issueDetails.closed.items.length, 1);
@@ -307,7 +307,10 @@ test('collector exports separate state slices and metadata, excludes every pull_
     repo.lists.issues.items.map((item) => item.id),
     ['1'],
   );
-  assert.equal(select(result.snapshot, { ...defaultIssueFilters, state: 'all' }).total, 12);
+  assert.equal(
+    select(result.snapshot, { ...defaultIssueFilters, state: 'all' }).total,
+    GITHUB_REPOSITORIES.length * 2,
+  );
   assert.ok(!JSON.stringify(result.snapshot).includes('secret@example.com'));
   assert.ok(!JSON.stringify(result.cache).includes('private-not-exported'));
 });
@@ -353,7 +356,7 @@ test('each issue state follows its own bounded pagination; unsafe labels are unk
       });
     }),
   });
-  assert.equal(result.requests, 57);
+  assert.equal(result.requests, GITHUB_REPOSITORIES.length * 9 + 3);
   assert.equal(result.snapshot.repositories[0].issueDetails.open.truncated, true);
   assert.equal(result.snapshot.repositories[0].issueDetails.closed.truncated, true);
   assert.equal(result.snapshot.repositories[0].issueDetails.closed.items.length, 2);
@@ -402,7 +405,10 @@ test('a close/reopen during collection is reconciled using the newest evidence, 
   assert.equal(repo.issueDetails.open.items.length, 0);
   assert.equal(repo.issueDetails.closed.items.length, 1);
   assert.equal(repo.lists.issues.items.length, 0);
-  assert.equal(select(result.snapshot, { ...defaultIssueFilters, state: 'all' }).total, 6);
+  assert.equal(
+    select(result.snapshot, { ...defaultIssueFilters, state: 'all' }).total,
+    GITHUB_REPOSITORIES.length,
+  );
   assert.equal(validateGithubSnapshot(result.snapshot), result.snapshot);
 });
 

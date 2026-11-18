@@ -1,4 +1,4 @@
-/** Public roots reviewed against openstruct-catalog@f3e95a4f5a65a8944fe03ba70df1fd6cde393486.
+/** Public roots reviewed against openstruct-catalog@98c6d39259e4cd04d9d2af4df5ee0113a482b31b.
  * Source: distribution.json and catalog/trust.json. Never load trust from the remote envelope.
  */
 export const CATALOG_URL =
@@ -27,6 +27,12 @@ export const PRODUCT_POLICIES = {
     sourceRepo: 'itanervale/GEOSPT-STRUCT',
     releaseRepo: 'ricardocorsini/openstruct-catalog',
     tagPrefix: 'geosptstruct-v',
+    keyId: 'launcher-packages-v1',
+  },
+  geostruct: {
+    sourceRepo: 'ricardocorsini/geo-struct',
+    releaseRepo: 'ricardocorsini/openstruct-catalog',
+    tagPrefix: 'geostruct-v',
     keyId: 'launcher-packages-v1',
   },
 } as const;

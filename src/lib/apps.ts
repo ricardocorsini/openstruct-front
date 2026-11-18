@@ -1,6 +1,13 @@
 import { isCurrentApp, validateAppRegistry } from './app-registry.ts';
 import type { AppEntry, CurrentApp, PlannedApp, AppPresentation } from './app-registry.ts';
 
+const geostructSource = '6fe17367ba9bf85d8ddccc42cbba23631ae58253';
+const geostructSourceUrl = `https://github.com/ricardocorsini/geo-struct/blob/${geostructSource}`;
+const geostructReleaseUrl =
+  'https://github.com/ricardocorsini/openstruct-catalog/releases/tag/geostruct-v0.2.0';
+const geostructAssets =
+  'https://github.com/ricardocorsini/openstruct-catalog/releases/download/geostruct-v0.2.0';
+
 /** Reviewed public evidence, not a live feed. See docs/CATALOGO-EDITORIAL.md. */
 export const apps: AppEntry[] = [
   {
@@ -302,13 +309,85 @@ export const apps: AppEntry[] = [
     },
   },
   {
+    id: 'geostruct',
+    name: 'GeoStruct',
+    category: 'Geotecnia',
+    description:
+      'Modelagem geotécnica 2D e análise de estabilidade de taludes com Fellenius e Bishop Simplificado.',
+    color: 'mineral',
+    symbol: 'slope',
+    number: '05',
+    route: '/apps/geostruct',
+    previewAnchor: '#projeto-padrao',
+    image: '/assets/geostruct-hercules-v2.webp',
+    imageAlt: 'Hércules em gravura sustentando uma massa de solo em camadas',
+    stage: 'current',
+    maturity: 'development',
+    repository: {
+      url: 'https://github.com/ricardocorsini/geo-struct',
+      branch: 'master',
+      visibility: 'public',
+    },
+    documentation: {
+      url: `${geostructSourceUrl}/docs/GUIA-DE-USO.md`,
+      ref: geostructSource,
+    },
+    license: {
+      spdx: 'MIT',
+      url: `${geostructSourceUrl}/LICENSE`,
+      ref: geostructSource,
+    },
+    code: {
+      version: '0.2.0',
+      url: 'https://github.com/ricardocorsini/geo-struct/blob/de00f77b6ca924cc724c6bce818198bd08ee3aa1/package.json',
+      ref: 'de00f77b6ca924cc724c6bce818198bd08ee3aa1',
+    },
+    distribution: {
+      version: '0.2.0',
+      sourceTag: 'v0.2.0',
+      sourceCommit: geostructSource,
+      channel: 'stable',
+      publishedAt: '2026-11-18T09:59:07Z',
+      releaseUrl: geostructReleaseUrl,
+      platforms: [
+        {
+          os: 'windows',
+          arch: 'x86_64',
+          format: 'exe',
+          url: `${geostructAssets}/geostruct-0.2.0-windows-x86_64.exe`,
+        },
+        {
+          os: 'linux',
+          arch: 'x86_64',
+          format: 'AppImage',
+          url: `${geostructAssets}/geostruct-0.2.0-linux-x86_64.AppImage`,
+        },
+      ],
+    },
+    editorial: {
+      reviewedAt: '2026-11-18',
+      sources: [
+        {
+          kind: 'description',
+          url: `${geostructSourceUrl}/README.md`,
+          ref: geostructSource,
+        },
+        {
+          kind: 'distribution',
+          url: 'https://github.com/ricardocorsini/openstruct-catalog/blob/98c6d39259e4cd04d9d2af4df5ee0113a482b31b/catalog.signed.json',
+          ref: '98c6d39259e4cd04d9d2af4df5ee0113a482b31b',
+        },
+      ],
+    },
+  },
+  {
     id: 'anchorstruct',
     name: 'AnchorStruct',
     category: 'Ligações e ancoragens',
     description: 'Cálculo de chumbadores.',
     color: 'steel',
     symbol: 'anchor',
-    number: '05',
+    number: '06',
     stage: 'planned',
     maturity: 'planned',
     planningStatus: 'not-started',
@@ -335,7 +414,7 @@ export const apps: AppEntry[] = [
     description: 'Estabilidade de taludes e contenções.',
     color: 'steel',
     symbol: 'slope',
-    number: '06',
+    number: '07',
     stage: 'planned',
     maturity: 'planned',
     planningStatus: 'not-started',

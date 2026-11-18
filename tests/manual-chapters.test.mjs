@@ -80,13 +80,14 @@ test('derives entries from current applications and retains the editorial sample
   assert.equal(MANUAL_CHAPTER_ROUTE, ':systemId/:editionId/:chapterSlug');
 });
 
-test('publishes the four versioned presentations and the two sample flows', () => {
+test('publishes versioned presentations for all five apps and the two sample flows', () => {
   validateManualSystems(manualSystems);
   const coverage = {
     consolostruct: '0.7.1',
     molastruct: '0.5.1',
     armadurastruct: '0.2.0',
     geosptstruct: '2.0.7',
+    geostruct: '0.2.0',
   };
 
   for (const [id, version] of Object.entries(coverage)) {

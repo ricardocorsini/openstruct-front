@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { collectGithub } from '../scripts/github-collector.mjs';
-import { validateGithubSnapshot } from '../src/lib/github-snapshot.ts';
+import { GITHUB_REPOSITORIES, validateGithubSnapshot } from '../src/lib/github-snapshot.ts';
 import { developmentSources, developmentView } from '../src/lib/development.ts';
 import { pullState, readPullFilters, selectPulls } from '../src/lib/pulls.ts';
 const at = '2026-11-07T19:00:00Z';
@@ -60,7 +60,7 @@ function api(override = () => null) {
 }
 test('collector exports four distinct PR states, public metadata and no issue duplication or CI fiction', async () => {
   const result = await collectGithub({ fetchImpl: api(), now });
-  assert.equal(result.requests, 45);
+  assert.equal(result.requests, GITHUB_REPOSITORIES.length * 7 + 3);
   const repo = result.snapshot.repositories[0];
   assert.deepEqual(repo.lists.pulls.items.map(pullState), ['open', 'draft', 'closed', 'merged']);
   assert.equal(repo.lists.issues.items.length, 0);
@@ -71,7 +71,7 @@ test('collector exports four distinct PR states, public metadata and no issue du
     !output.includes('@') && !output.includes('not exported') && !output.includes('checks'),
   );
   const view = developmentView(result.snapshot, developmentSources, now());
-  assert.equal(view.pulls.count, 12); // Only open and draft, not the 20 PRs of all states.
+  assert.equal(view.pulls.count, developmentSources.length * 2); // Open and draft in each repository.
 });
 test('state and repository filters use URL selection, stable update ordering and unknown values', async () => {
   const { snapshot } = await collectGithub({ fetchImpl: api(), now });
@@ -86,8 +86,14 @@ test('state and repository filters use URL selection, stable update ordering and
   const selected = selectPulls(snapshot, [developmentSources[0]], 'merged', now());
   assert.equal(selected.rows.length, 1);
   assert.equal(pullState(selected.rows[0].item), 'merged');
-  assert.equal(selectPulls(snapshot, developmentSources, 'all', now()).rows.length, 24);
-  assert.equal(selectPulls(snapshot, developmentSources, 'closed', now()).rows.length, 6);
+  assert.equal(
+    selectPulls(snapshot, developmentSources, 'all', now()).rows.length,
+    developmentSources.length * 4,
+  );
+  assert.equal(
+    selectPulls(snapshot, developmentSources, 'closed', now()).rows.length,
+    developmentSources.length,
+  );
 });
 test('missing draft or merge evidence stays unknown; invalid metadata and foreign URLs are rejected', async () => {
   const { snapshot } = await collectGithub({ fetchImpl: api(), now });
@@ -195,7 +201,7 @@ test('PR pagination remains bounded at two pages per repository and exposes trun
       );
     }),
   });
-  assert.equal(result.requests, 51);
+  assert.equal(result.requests, GITHUB_REPOSITORIES.length * 8 + 3);
   assert.equal(result.snapshot.repositories[0].lists.pulls.items.length, 60);
   assert.equal(result.snapshot.repositories[0].lists.pulls.truncated, true);
 });

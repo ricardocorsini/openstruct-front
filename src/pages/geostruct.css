@@ -1,0 +1,58 @@
+.geostruct-intro {
+  align-items: center;
+}
+
+.product-intro > .geostruct-intro-copy {
+  display: block;
+}
+
+.geostruct-intro-copy p {
+  margin-top: 18px;
+}
+
+.geostruct-intro-copy .button-row {
+  margin-top: 22px;
+}
+
+.geostruct-intro-copy .product-meta {
+  margin-top: 16px;
+}
+
+.geostruct-art {
+  display: block;
+  width: min(100%, 430px);
+  height: auto;
+  justify-self: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.geostruct-scope {
+  margin-block: 26px 12px;
+  max-width: 70ch;
+}
+
+.geostruct-steps {
+  padding-left: 1.4rem;
+}
+
+.geostruct-steps li {
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+
+.geostruct-steps li::marker {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.geostruct-steps p {
+  margin-top: 12px;
+}
+
+.geostruct-links {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+}

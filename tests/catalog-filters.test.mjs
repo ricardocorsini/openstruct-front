@@ -48,16 +48,16 @@ test('busca sem acentos combina categoria e plataforma oficial', () => {
   assert.deepEqual(select({ q: 'armadura', category: 'Fundações' }), []);
 });
 test('planejamento só aparece por opção explícita e nunca ganha plataforma de um pacote alheio', () => {
-  assert.equal(select().length, 4);
-  assert.equal(select({ future: true }).length, 6);
+  assert.equal(select().length, 5);
+  assert.equal(select({ future: true }).length, 7);
   assert.deepEqual(
     select({ future: true, availability: 'planned' }).map((app) => app.id),
     ['anchorstruct', 'slopestruct'],
   );
   assert.equal(select({ future: true, availability: 'planned', platform: 'windows' }).length, 0);
-  assert.equal(select({ future: true, availability: 'available' }).length, 4);
+  assert.equal(select({ future: true, availability: 'available' }).length, 5);
 });
-test('chumbadores e taludes são encontrados apenas no horizonte futuro, sem instalação', () => {
+test('as duas propostas aparecem com o horizonte futuro e sem instalação', () => {
   for (const [id, query, category] of [
     ['anchorstruct', 'chumbadores', 'Ligações e ancoragens'],
     ['slopestruct', 'CONTENCOES', 'Geotecnia'],
@@ -70,7 +70,7 @@ test('chumbadores e taludes são encontrados apenas no horizonte futuro, sem ins
     const filters = readFilters(new URLSearchParams('availability=planned'), categories);
     assert.ok(selectCatalog(apps, products, filters).some((app) => app.id === id));
     assert.deepEqual(
-      select({ category, future: true }).map((app) => app.id),
+      select({ category, future: true, availability: 'planned' }).map((app) => app.id),
       [id],
     );
     assert.deepEqual(select({ q: query, future: true, availability: 'available' }), []);
@@ -83,11 +83,11 @@ test('chumbadores e taludes são encontrados apenas no horizonte futuro, sem ins
 test('falha sem pacote não infere instalação dos metadados editoriais; dado validado antigo continua filtrável', () => {
   assert.equal(select({ availability: 'available' }, {}).length, 0);
   assert.equal(select({ platform: 'windows' }, {}).length, 0);
-  assert.equal(select({ availability: 'unconfirmed' }, {}).length, 4);
+  assert.equal(select({ availability: 'unconfirmed' }, {}).length, 5);
   const stale = Object.fromEntries(
     Object.entries(products).map(([id, p]) => [id, { ...p, stale: true }]),
   );
-  assert.equal(select({ availability: 'available' }, stale).length, 4);
+  assert.equal(select({ availability: 'available' }, stale).length, 5);
 });
 test('ordem estável coloca pacote confirmado primeiro e preserva ordem dentro dos grupos', () => {
   const p = { armadurastruct: products.armadurastruct };
@@ -98,6 +98,7 @@ test('ordem estável coloca pacote confirmado primeiro e preserva ordem dentro d
       'consolostruct',
       'molastruct',
       'geosptstruct',
+      'geostruct',
       ...apps.filter((a) => a.stage === 'planned').map((a) => a.id),
     ],
   );

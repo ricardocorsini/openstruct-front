@@ -39,8 +39,13 @@ test('uma consulta por sessão é compartilhada, com carregamento e data por apl
     states.some((state) => state.loading && state.attempts === 1),
     true,
   );
-  for (const id of CATALOG_IDS.filter((id) => id !== 'geosptstruct')) {
+  const absentFromFixture = new Set(['geosptstruct', 'geostruct']);
+  for (const id of CATALOG_IDS) {
     const product = store.getSnapshot().products[id];
+    if (absentFromFixture.has(id)) {
+      assert.equal(product.status, 'unknown');
+      continue;
+    }
     assert.equal(product.status, 'ready');
     assert.equal(product.stale, false);
     assert.equal(product.checkedAt, new Date(startTime).toISOString());

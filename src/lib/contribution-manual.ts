@@ -12,6 +12,7 @@ export const manualReview = {
     'ricardocorsini/consolo-struct': '54abc400ae43a5a3bdf025df85c327dde1ad5086',
     'ricardocorsini/mola-struct': 'aeda58309ddadcd53cac16aa1625473391d8efad',
     'ricardocorsini/armadura-struct': '8e7dcd726a37ba801c5a1d5fbe89342ebcb67ad5',
+    'ricardocorsini/geo-struct': '6fe17367ba9bf85d8ddccc42cbba23631ae58253',
     'ricardocorsini/openstruct-catalog': 'a527a902cb35299c334e01564e83e798cd64c048',
   },
 };

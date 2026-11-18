@@ -5,7 +5,7 @@ import { getAppPage, getAppStatus, validateAppRegistry } from '../src/lib/app-re
 
 const copy = () => structuredClone(apps);
 
-test('preserva os quatro produtos atuais e mantém somente duas propostas no horizonte', () => {
+test('inclui GeoStruct entre os produtos atuais e mantém somente duas propostas no horizonte', () => {
   assert.doesNotThrow(() => validateAppRegistry(apps));
   assert.deepEqual(
     currentApps.map((app) => [app.name, app.route]),
@@ -14,6 +14,7 @@ test('preserva os quatro produtos atuais e mantém somente duas propostas no hor
       ['MolaStruct', '/apps/molastruct'],
       ['ArmaduraStruct', '/apps/armadurastruct'],
       ['GeoSPT', '/apps/geosptstruct'],
+      ['GeoStruct', '/apps/geostruct'],
     ],
   );
   const planned = apps.filter((app) => app.stage === 'planned');
@@ -21,10 +22,10 @@ test('preserva os quatro produtos atuais e mantém somente duas propostas no hor
     planned.map((app) => app.name),
     ['AnchorStruct', 'SlopeStruct'],
   );
-  assert.equal(apps.length, 6);
+  assert.equal(apps.length, 7);
   assert.deepEqual(
     planned.map((app) => app.number),
-    ['05', '06'],
+    ['06', '07'],
   );
   assert.deepEqual(planned.map(getAppStatus), ['A iniciar', 'A iniciar']);
   for (const app of planned) {
