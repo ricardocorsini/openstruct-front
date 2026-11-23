@@ -99,9 +99,9 @@ export function ProductAvailability({ app }: { app: CurrentApp }) {
         </p>
       )}
       <p>
-        Conteúdo técnico desta página: versão {app.distribution?.version ?? 'em revisão'}.
+        Conteúdo técnico desta página: versão {app.distribution?.version ?? app.code.version}.
         {release &&
-          release.version !== app.distribution?.version &&
+          release.version !== (app.distribution?.version ?? app.code.version) &&
           ' A versão para instalar mudou; os recursos descritos permanecem vinculados à documentação revisada.'}
       </p>
       <div className="product-availability-actions">

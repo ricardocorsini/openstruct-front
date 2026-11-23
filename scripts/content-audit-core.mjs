@@ -104,7 +104,7 @@ export function editorialDrift(apps, catalog) {
             'review',
           ),
         ];
-      const documented = a.distribution.version,
+      const documented = a.distribution?.version ?? a.code.version,
         distributed = product.release.version;
       if (compareVersions(distributed, documented) === 0) return [];
       return [

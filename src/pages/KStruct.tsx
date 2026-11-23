@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowUpRight, BookOpen, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AppStatus } from '../components/AppStatus';
 import { ProductAvailability } from '../components/CatalogAvailability';
+import { useProductAvailability } from '../components/CatalogProvider';
 import { Contributors } from '../components/Contributors';
 import { ProductInstallation } from '../components/ProductInstallation';
 import { getCurrentApp } from '../lib/apps';
@@ -11,6 +12,7 @@ const app = getCurrentApp('kstruct');
 const docs = `${app.repository.url}/blob/${app.documentation.ref}/docs`;
 
 export function KStruct() {
+  const availability = useProductAvailability(app.id);
   return (
     <>
       <section className="product-hero container">
@@ -129,7 +131,11 @@ export function KStruct() {
         <div className="access-grid">
           <div className="access-main">
             <h2 id="kstruct-instalar">Instale o KStruct</h2>
-            <ProductInstallation app={app} />
+            {availability?.release ? (
+              <ProductInstallation app={app} />
+            ) : (
+              <p>As opções de instalação aparecem aqui quando o catálogo confirmar os pacotes.</p>
+            )}
           </div>
           <div className="access-secondary">
             <BookOpen size={26} aria-hidden="true" />
