@@ -149,8 +149,7 @@ test('disponibilidade não promove a versão de código nem implica maturidade e
   const armadura = getCurrentApp('armadurastruct');
   assert.equal(armadura.code.version, armadura.distribution.version);
   assert.notEqual(armadura.code.ref, armadura.distribution.sourceCommit);
-  for (const app of currentApps.filter((app) => app.id !== 'kstruct'))
-    assert.equal(getAppStatus(app), 'Disponível para desktop');
+  for (const app of currentApps) assert.equal(getAppStatus(app), 'Disponível para desktop');
   const unpublished = copy();
   delete unpublished[0].distribution;
   assert.doesNotThrow(() => validateAppRegistry(unpublished));

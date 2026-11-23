@@ -9,6 +9,10 @@ const geostructAssets =
   'https://github.com/ricardocorsini/openstruct-catalog/releases/download/geostruct-v0.2.0';
 const kstructSource = 'ddcb851bf2cbcc51bdb1b303f91174a74b53288d';
 const kstructSourceUrl = `https://github.com/ricardocorsini/k-struct/blob/${kstructSource}`;
+const kstructReleaseUrl =
+  'https://github.com/ricardocorsini/openstruct-catalog/releases/tag/kstruct-v0.3.0';
+const kstructAssets =
+  'https://github.com/ricardocorsini/openstruct-catalog/releases/download/kstruct-v0.3.0';
 
 /** Reviewed public evidence, not a live feed. See docs/CATALOGO-EDITORIAL.md. */
 export const apps: AppEntry[] = [
@@ -404,9 +408,38 @@ export const apps: AppEntry[] = [
     documentation: { url: `${kstructSourceUrl}/README.md`, ref: kstructSource },
     license: { spdx: 'MIT', url: `${kstructSourceUrl}/LICENSE`, ref: kstructSource },
     code: { version: '0.3.0', url: `${kstructSourceUrl}/package.json`, ref: kstructSource },
+    distribution: {
+      version: '0.3.0',
+      sourceTag: 'v0.3.0',
+      sourceCommit: kstructSource,
+      channel: 'stable',
+      publishedAt: '2026-11-23T16:44:29Z',
+      releaseUrl: kstructReleaseUrl,
+      platforms: [
+        {
+          os: 'windows',
+          arch: 'x86_64',
+          format: 'exe',
+          url: `${kstructAssets}/kstruct-0.3.0-windows-x86_64.exe`,
+        },
+        {
+          os: 'linux',
+          arch: 'x86_64',
+          format: 'AppImage',
+          url: `${kstructAssets}/kstruct-0.3.0-linux-x86_64.AppImage`,
+        },
+      ],
+    },
     editorial: {
       reviewedAt: '2026-11-23',
-      sources: [{ kind: 'description', url: `${kstructSourceUrl}/README.md`, ref: kstructSource }],
+      sources: [
+        { kind: 'description', url: `${kstructSourceUrl}/README.md`, ref: kstructSource },
+        {
+          kind: 'distribution',
+          url: 'https://github.com/ricardocorsini/openstruct-catalog/blob/57c6c521ba62e410878432888ad935eb7b57788e/catalog.signed.json',
+          ref: '57c6c521ba62e410878432888ad935eb7b57788e',
+        },
+      ],
     },
   },
   {

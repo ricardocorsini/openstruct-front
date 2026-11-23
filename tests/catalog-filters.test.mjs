@@ -55,7 +55,7 @@ test('planejamento só aparece por opção explícita e nunca ganha plataforma d
     ['anchorstruct', 'slopestruct'],
   );
   assert.equal(select({ future: true, availability: 'planned', platform: 'windows' }).length, 0);
-  assert.equal(select({ future: true, availability: 'available' }).length, 5);
+  assert.equal(select({ future: true, availability: 'available' }).length, 6);
 });
 test('as duas propostas aparecem com o horizonte futuro e sem instalação', () => {
   for (const [id, query, category] of [
@@ -87,7 +87,7 @@ test('falha sem pacote não infere instalação dos metadados editoriais; dado v
   const stale = Object.fromEntries(
     Object.entries(products).map(([id, p]) => [id, { ...p, stale: true }]),
   );
-  assert.equal(select({ availability: 'available' }, stale).length, 5);
+  assert.equal(select({ availability: 'available' }, stale).length, 6);
 });
 test('ordem estável coloca pacote confirmado primeiro e preserva ordem dentro dos grupos', () => {
   const p = { armadurastruct: products.armadurastruct };
