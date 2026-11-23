@@ -71,6 +71,7 @@ test('each public product and infrastructure source keeps its identity; private 
   assert.ok(!developmentSources.some((source) => source.repository.includes('launcher-struct')));
   assert.equal(selectDevelopmentSources('mola-struct').length, 1);
   assert.equal(selectDevelopmentSources('geo-struct')[0]?.appRoute, '/apps/geostruct');
+  assert.equal(selectDevelopmentSources('k-struct')[0]?.appRoute, '/apps/kstruct');
   for (const invalid of [null, '', 'private', 'ricardocorsini/launcher-struct'])
     assert.equal(selectDevelopmentSources(invalid).length, GITHUB_REPOSITORIES.length);
 });

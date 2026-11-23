@@ -35,6 +35,12 @@ export const PRODUCT_POLICIES = {
     tagPrefix: 'geostruct-v',
     keyId: 'launcher-packages-v1',
   },
+  kstruct: {
+    sourceRepo: 'ricardocorsini/k-struct',
+    releaseRepo: 'ricardocorsini/openstruct-catalog',
+    tagPrefix: 'kstruct-v',
+    keyId: 'launcher-packages-v1',
+  },
 } as const;
 
 export type CatalogProductId = keyof typeof PRODUCT_POLICIES;

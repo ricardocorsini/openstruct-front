@@ -5,7 +5,7 @@ import { getAppPage, getAppStatus, validateAppRegistry } from '../src/lib/app-re
 
 const copy = () => structuredClone(apps);
 
-test('inclui GeoStruct entre os produtos atuais e mantém somente duas propostas no horizonte', () => {
+test('inclui KStruct entre os produtos atuais e mantém somente duas propostas no horizonte', () => {
   assert.doesNotThrow(() => validateAppRegistry(apps));
   assert.deepEqual(
     currentApps.map((app) => [app.name, app.route]),
@@ -15,6 +15,7 @@ test('inclui GeoStruct entre os produtos atuais e mantém somente duas propostas
       ['ArmaduraStruct', '/apps/armadurastruct'],
       ['GeoSPT', '/apps/geosptstruct'],
       ['GeoStruct', '/apps/geostruct'],
+      ['KStruct', '/apps/kstruct'],
     ],
   );
   const planned = apps.filter((app) => app.stage === 'planned');
@@ -22,10 +23,10 @@ test('inclui GeoStruct entre os produtos atuais e mantém somente duas propostas
     planned.map((app) => app.name),
     ['AnchorStruct', 'SlopeStruct'],
   );
-  assert.equal(apps.length, 7);
+  assert.equal(apps.length, 8);
   assert.deepEqual(
     planned.map((app) => app.number),
-    ['06', '07'],
+    ['07', '08'],
   );
   assert.deepEqual(planned.map(getAppStatus), ['A iniciar', 'A iniciar']);
   for (const app of planned) {
@@ -148,7 +149,8 @@ test('disponibilidade não promove a versão de código nem implica maturidade e
   const armadura = getCurrentApp('armadurastruct');
   assert.equal(armadura.code.version, armadura.distribution.version);
   assert.notEqual(armadura.code.ref, armadura.distribution.sourceCommit);
-  for (const app of currentApps) assert.equal(getAppStatus(app), 'Disponível para desktop');
+  for (const app of currentApps.filter((app) => app.id !== 'kstruct'))
+    assert.equal(getAppStatus(app), 'Disponível para desktop');
   const unpublished = copy();
   delete unpublished[0].distribution;
   assert.doesNotThrow(() => validateAppRegistry(unpublished));

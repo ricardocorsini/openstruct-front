@@ -69,7 +69,11 @@ test('a chave compartilhada do publicador não permite usar a assinatura de Arma
 
 test('snapshots anteriores preservam fontes conhecidas e acrescentam apps sem inventar atividade', () => {
   const old = emptyGithubSnapshot();
-  const added = ['itanervale/GEOSPT-STRUCT', 'ricardocorsini/geo-struct'];
+  const added = [
+    'itanervale/GEOSPT-STRUCT',
+    'ricardocorsini/geo-struct',
+    'ricardocorsini/k-struct',
+  ];
   old.repositories = old.repositories.filter((repo) => !added.includes(repo.repository));
   const migrated = validateGithubSnapshot(old);
   assert.equal(migrated.repositories.length, old.repositories.length + added.length);

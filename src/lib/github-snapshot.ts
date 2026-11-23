@@ -14,12 +14,14 @@ export const GITHUB_REPOSITORIES = [
   'ricardocorsini/armadura-struct',
   'itanervale/GEOSPT-STRUCT',
   'ricardocorsini/geo-struct',
+  'ricardocorsini/k-struct',
   'ricardocorsini/openstruct-catalog',
 ] as const;
 export type PublicRepository = (typeof GITHUB_REPOSITORIES)[number];
 const REPOSITORIES_ADDED_AFTER_INITIAL_SNAPSHOT = new Set<PublicRepository>([
   'itanervale/GEOSPT-STRUCT',
   'ricardocorsini/geo-struct',
+  'ricardocorsini/k-struct',
 ]);
 export const ACTIVITY_KINDS = ['issues', 'pulls', 'milestones', 'contributors'] as const;
 export type ActivityKind = (typeof ACTIVITY_KINDS)[number];

@@ -7,6 +7,8 @@ const geostructReleaseUrl =
   'https://github.com/ricardocorsini/openstruct-catalog/releases/tag/geostruct-v0.2.0';
 const geostructAssets =
   'https://github.com/ricardocorsini/openstruct-catalog/releases/download/geostruct-v0.2.0';
+const kstructSource = 'ddcb851bf2cbcc51bdb1b303f91174a74b53288d';
+const kstructSourceUrl = `https://github.com/ricardocorsini/k-struct/blob/${kstructSource}`;
 
 /** Reviewed public evidence, not a live feed. See docs/CATALOGO-EDITORIAL.md. */
 export const apps: AppEntry[] = [
@@ -381,13 +383,40 @@ export const apps: AppEntry[] = [
     },
   },
   {
+    id: 'kstruct',
+    name: 'KStruct',
+    category: 'Análise estrutural',
+    description: 'Modelagem e análise estática linear de pórticos planos e espaciais com OOFEM.',
+    color: 'cobalt',
+    symbol: 'frame',
+    number: '06',
+    route: '/apps/kstruct',
+    previewAnchor: '#viga-de-referencia',
+    image: '/assets/kstruct-dedalo.webp',
+    imageAlt: 'Dédalo em gravura apoiado numa coluna grega, ilustração do KStruct',
+    stage: 'current',
+    maturity: 'experimental',
+    repository: {
+      url: 'https://github.com/ricardocorsini/k-struct',
+      branch: 'master',
+      visibility: 'public',
+    },
+    documentation: { url: `${kstructSourceUrl}/README.md`, ref: kstructSource },
+    license: { spdx: 'MIT', url: `${kstructSourceUrl}/LICENSE`, ref: kstructSource },
+    code: { version: '0.3.0', url: `${kstructSourceUrl}/package.json`, ref: kstructSource },
+    editorial: {
+      reviewedAt: '2026-11-23',
+      sources: [{ kind: 'description', url: `${kstructSourceUrl}/README.md`, ref: kstructSource }],
+    },
+  },
+  {
     id: 'anchorstruct',
     name: 'AnchorStruct',
     category: 'Ligações e ancoragens',
     description: 'Cálculo de chumbadores.',
     color: 'steel',
     symbol: 'anchor',
-    number: '06',
+    number: '07',
     stage: 'planned',
     maturity: 'planned',
     planningStatus: 'not-started',
@@ -414,7 +443,7 @@ export const apps: AppEntry[] = [
     description: 'Estabilidade de taludes e contenções.',
     color: 'steel',
     symbol: 'slope',
-    number: '07',
+    number: '08',
     stage: 'planned',
     maturity: 'planned',
     planningStatus: 'not-started',

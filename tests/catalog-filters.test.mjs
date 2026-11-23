@@ -48,8 +48,8 @@ test('busca sem acentos combina categoria e plataforma oficial', () => {
   assert.deepEqual(select({ q: 'armadura', category: 'Fundações' }), []);
 });
 test('planejamento só aparece por opção explícita e nunca ganha plataforma de um pacote alheio', () => {
-  assert.equal(select().length, 5);
-  assert.equal(select({ future: true }).length, 7);
+  assert.equal(select().length, 6);
+  assert.equal(select({ future: true }).length, 8);
   assert.deepEqual(
     select({ future: true, availability: 'planned' }).map((app) => app.id),
     ['anchorstruct', 'slopestruct'],
@@ -83,7 +83,7 @@ test('as duas propostas aparecem com o horizonte futuro e sem instalação', () 
 test('falha sem pacote não infere instalação dos metadados editoriais; dado validado antigo continua filtrável', () => {
   assert.equal(select({ availability: 'available' }, {}).length, 0);
   assert.equal(select({ platform: 'windows' }, {}).length, 0);
-  assert.equal(select({ availability: 'unconfirmed' }, {}).length, 5);
+  assert.equal(select({ availability: 'unconfirmed' }, {}).length, 6);
   const stale = Object.fromEntries(
     Object.entries(products).map(([id, p]) => [id, { ...p, stale: true }]),
   );
@@ -99,6 +99,7 @@ test('ordem estável coloca pacote confirmado primeiro e preserva ordem dentro d
       'molastruct',
       'geosptstruct',
       'geostruct',
+      'kstruct',
       ...apps.filter((a) => a.stage === 'planned').map((a) => a.id),
     ],
   );

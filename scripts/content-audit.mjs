@@ -408,7 +408,7 @@ for (const id of CATALOG_IDS) {
       for (const asset of release.assets) add(asset.url, 'src/data/catalog.signed.json', 1);
 }
 for (const app of apps.filter((a) => a.stage === 'current'))
-  for (const asset of app.distribution.platforms) {
+  for (const asset of app.distribution?.platforms ?? []) {
     const expected =
       'https://github.com/' + PRODUCT_POLICIES[app.id].releaseRepo + '/releases/download/';
     if (!asset.url.startsWith(expected))
