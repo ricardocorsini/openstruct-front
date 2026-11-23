@@ -1,0 +1,58 @@
+.kstruct-intro {
+  align-items: center;
+}
+
+.product-intro.kstruct-intro > div {
+  display: block;
+}
+
+.kstruct-intro p {
+  margin-top: 18px;
+}
+
+.kstruct-intro .button-row {
+  margin-top: 22px;
+}
+
+.kstruct-intro .product-meta {
+  margin-top: 16px;
+}
+
+.kstruct-art {
+  display: block;
+  width: min(100%, 430px);
+  height: auto;
+  justify-self: center;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.kstruct-scope {
+  max-width: 70ch;
+  margin: 26px 0 12px;
+}
+
+.kstruct-steps {
+  padding-left: 1.4rem;
+}
+
+.kstruct-steps li {
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+
+.kstruct-steps li::marker {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.kstruct-steps p {
+  margin-top: 12px;
+}
+
+.kstruct-links {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+}

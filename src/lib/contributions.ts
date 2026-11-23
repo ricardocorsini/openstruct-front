@@ -83,6 +83,17 @@ export const contributionPolicies: Record<PublicRepository, ContributionPolicy> 
     reviewedRef: '6fe17367ba9bf85d8ddccc42cbba23631ae58253',
     reviewedAt: '2026-11-18',
   },
+  'ricardocorsini/k-struct': {
+    labels: ['good first issue', 'help wanted'],
+    guide: {
+      url: 'https://github.com/ricardocorsini/k-struct/blob/ddcb851bf2cbcc51bdb1b303f91174a74b53288d/AGENTS.md',
+      label: 'Guia de contribuição',
+    },
+    documentation:
+      'https://github.com/ricardocorsini/k-struct/blob/ddcb851bf2cbcc51bdb1b303f91174a74b53288d/README.md',
+    reviewedRef: 'ddcb851bf2cbcc51bdb1b303f91174a74b53288d',
+    reviewedAt: '2026-11-23',
+  },
   'ricardocorsini/openstruct-catalog': {
     labels: ['good first issue', 'help wanted'],
     guide: {

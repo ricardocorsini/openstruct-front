@@ -38,6 +38,9 @@ const GeoSPT = React.lazy(() =>
 const GeoStruct = React.lazy(() =>
   import('./pages/GeoStruct').then((module) => ({ default: module.GeoStruct })),
 );
+const KStruct = React.lazy(() =>
+  import('./pages/KStruct').then((module) => ({ default: module.KStruct })),
+);
 const Launcher = React.lazy(() =>
   import('./pages/Launcher').then((module) => ({ default: module.Launcher })),
 );
@@ -78,6 +81,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               <Route path={getCurrentApp('armadurastruct').route} element={<Armadura />} />
               <Route path={getCurrentApp('geosptstruct').route} element={<GeoSPT />} />
               <Route path={getCurrentApp('geostruct').route} element={<GeoStruct />} />
+              <Route path={getCurrentApp('kstruct').route} element={<KStruct />} />
               <Route path={getPlannedApp('anchorstruct').page.route} element={<Anchor />} />
               <Route path={getPlannedApp('slopestruct').page.route} element={<Slope />} />
               <Route path="launcher" element={<Launcher />} />
